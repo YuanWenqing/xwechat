@@ -1,0 +1,4 @@
+rootProject.name = "xwechat"
+
+include "xwechat-common"
+include "xwechat-user"
