@@ -3,22 +3,22 @@
  */
 package com.xwechat.core;
 
+import okhttp3.HttpUrl;
 import okhttp3.Request;
 
 /**
  * @author yuanwq
  */
-public interface IWechatRequest<R extends IWechatResponse> {
+public interface IWechatApi<R extends IWechatResponse> {
   /**
    * 构造OkHttp3的请求体
    */
   public Request toOkHttpRequest();
 
   /**
-   * @return US-ASCII representation of url, composing schema, host, path, query string, but except
-   *         request body.
+   * OkHttp3的HttpUrl
    */
-  public String toASCIIUrl();
+  public HttpUrl toOkHttpUrl();
 
   /**
    * 请求结果的映射类，用于json形式的结果

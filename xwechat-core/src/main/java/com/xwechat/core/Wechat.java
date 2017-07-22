@@ -49,11 +49,11 @@ public class Wechat {
     return httpClient;
   }
 
-  public Response rawCall(IWechatRequest<?> request) throws IOException {
+  public Response rawCall(IWechatApi<?> request) throws IOException {
     return httpClient.newCall(request.toOkHttpRequest()).execute();
   }
 
-  public <R extends IWechatResponse> R call(IWechatRequest<R> request) throws IOException {
+  public <R extends IWechatResponse> R call(IWechatApi<R> request) throws IOException {
     Response rawResponse = rawCall(request);
     return mapJsonResponse(rawResponse.body().string(), request.getResponseClass());
   }
