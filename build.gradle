@@ -26,6 +26,9 @@ project(':xwechat-core') {
 
     dependencies {
 
+        // http
+        compile 'com.squareup.okhttp3:okhttp:3.8.1'
+
         // utils
         compile 'org.apache.commons:commons-lang3:3.4'
         compile 'com.google.guava:guava:19.0'
@@ -48,8 +51,6 @@ project(':xwechat-sns') {
     dependencies {
         compile project(':xwechat-core')
 
-        compile 'com.squareup.okhttp3:okhttp:3.8.1'
-
     }
 
 }
@@ -60,8 +61,6 @@ project(':xwechat-user') {
 
     dependencies {
         compile project(':xwechat-core')
-
-        compile 'com.squareup.okhttp3:okhttp:3.8.1'
 
     }
 
