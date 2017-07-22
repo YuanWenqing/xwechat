@@ -21,12 +21,29 @@ subprojects {
     // apply plugin: "eclipse"
 }
 // config for subprojects
-project(':xwechat-common') {
+project(':xwechat-core') {
     apply plugin: nexusPublish
 
     dependencies {
 
+        // utils
+        compile 'org.apache.commons:commons-lang3:3.4'
+        compile 'com.google.guava:guava:19.0'
+
     }
+}
+project(':xwechat-sns') {
+    // version = "1.0.0"
+
+    apply plugin: nexusPublish
+
+    dependencies {
+        compile project(':xwechat-core')
+
+        compile 'com.squareup.okhttp3:okhttp:3.8.1'
+
+    }
+
 }
 project(':xwechat-user') {
     // version = "1.0.0"
@@ -34,6 +51,8 @@ project(':xwechat-user') {
     apply plugin: nexusPublish
 
     dependencies {
+        compile project(':xwechat-core')
+
         compile 'com.squareup.okhttp3:okhttp:3.8.1'
 
     }

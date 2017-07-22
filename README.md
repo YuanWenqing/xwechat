@@ -11,7 +11,7 @@
 
 * 微信公众号服务：<https://github.com/caspar-chen/caswechat>
 * 支持的比较全面的sdk，封装的不错：<https://github.com/liyiorg/weixin-popular>
-* 轻量sdk：<https://github.com/ihaolin/wechat>
+* 轻量sdk，不支持sns api：<https://github.com/ihaolin/wechat>
 * 封装不完整，还在开发中：<https://github.com/cuter44/wxpay-sdk>
 * 只支持一个的微信公众号sdk，好久没有更新：<https://github.com/sword-org/wechat4j>
 * 一个不错的微信sdk，可惜是PHP版：[EasyWechat](https://easywechat.org/)，<https://github.com/overtrue/wechat>
