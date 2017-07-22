@@ -7,7 +7,7 @@ import org.apache.commons.lang3.StringUtils;
 
 import com.google.common.base.Preconditions;
 import com.xwechat.core.AbstractWechatApi;
-import com.xwechat.core.IWechatResponse;
+import com.xwechat.core.AbstractWechatReponse;
 import com.xwechat.def.GrantType;
 import com.xwechat.sns.Oauth2AccessTokenApi.Oauth2AccessTokenResponse;
 
@@ -48,7 +48,7 @@ public class Oauth2AccessTokenApi extends AbstractWechatApi<Oauth2AccessTokenRes
     return Oauth2AccessTokenResponse.class;
   }
 
-  public static class Oauth2AccessTokenResponse implements IWechatResponse {
+  public static class Oauth2AccessTokenResponse extends AbstractWechatReponse {
     private String accessToken;
     private int expiresIn;
     private String refreshToken;

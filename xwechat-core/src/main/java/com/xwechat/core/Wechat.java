@@ -60,6 +60,8 @@ public class Wechat {
 
   private <R extends IWechatResponse> R mapJsonResponse(String text, Class<R> responseClass)
       throws IOException {
-    return objectMapper.readValue(text, responseClass);
+    R response = objectMapper.readValue(text, responseClass);
+    response.setBodyText(text);
+    return response;
   }
 }

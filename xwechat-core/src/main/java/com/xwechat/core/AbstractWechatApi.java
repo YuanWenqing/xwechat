@@ -31,4 +31,8 @@ public abstract class AbstractWechatApi<R extends IWechatResponse>
     return requestBuilder.url(toOkHttpUrl()).build();
   }
 
+  @Override
+  public String toString() {
+    return toOkHttpUrl().toString();
+  }
 }
