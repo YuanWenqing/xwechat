@@ -1,0 +1,68 @@
+
+apply from: "http://mlook.oss-cn-beijing.aliyuncs.com/open/look.gradle"
+// apply from : "../gradle/look.gradle"
+
+// root project
+ext {
+    entryRemovable = { entry ->
+        // entry.path.contains('lookcommon-base')
+    }
+    appendMore = { node ->
+        // node.appendNode('classpathentry', [combineaccessrules:'false',kind:'src',path:'/lookcommon-base',exported:true])
+    }
+}
+apply plugin: rootEclipse
+
+// project setting
+allprojects {
+}
+subprojects {
+    apply plugin: "java"
+    // apply plugin: "eclipse"
+}
+// config for subprojects
+project(':xwechat-core') {
+    apply plugin: nexusPublish
+
+    dependencies {
+
+        // utils
+        compile 'org.apache.commons:commons-lang3:3.4'
+        compile 'com.google.guava:guava:19.0'
+
+        // log
+        compile 'log4j:log4j:1.2.17'
+        compile 'org.slf4j:slf4j-api:1.7.7'
+        compile 'org.slf4j:slf4j-log4j12:1.7.7'
+
+        // json
+        compile 'com.fasterxml.jackson.core:jackson-databind:2.4.+'
+
+    }
+}
+project(':xwechat-sns') {
+    // version = "1.0.0"
+
+    apply plugin: nexusPublish
+
+    dependencies {
+        compile project(':xwechat-core')
+
+        compile 'com.squareup.okhttp3:okhttp:3.8.1'
+
+    }
+
+}
+project(':xwechat-user') {
+    // version = "1.0.0"
+
+    apply plugin: nexusPublish
+
+    dependencies {
+        compile project(':xwechat-core')
+
+        compile 'com.squareup.okhttp3:okhttp:3.8.1'
+
+    }
+
+}

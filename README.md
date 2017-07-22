@@ -11,12 +11,32 @@
 
 * 微信公众号服务：<https://github.com/caspar-chen/caswechat>
 * 支持的比较全面的sdk，封装的不错：<https://github.com/liyiorg/weixin-popular>
-* 轻量sdk：<https://github.com/ihaolin/wechat>
+* 轻量sdk，不支持sns api：<https://github.com/ihaolin/wechat>
 * 封装不完整，还在开发中：<https://github.com/cuter44/wxpay-sdk>
 * 只支持一个的微信公众号sdk，好久没有更新：<https://github.com/sword-org/wechat4j>
 * 一个不错的微信sdk，可惜是PHP版：[EasyWechat](https://easywechat.org/)，<https://github.com/overtrue/wechat>
 
 所以，我们又造了一遍轮子，实现了一个自己的微信java sdk，对微信的api进行封装。
+
+# 设计
+参考了上述多个项目，并研究了一下微信开放平台和公众平台的开发文档，发现微信的open api比较混乱，且不太成体系，很多地方的api重复，但又有一些api容易混淆：有些api在多种场景下出现，但又用于不同用途，比如通过appId、appSecret获取通用的应用级别AccessToken的接口可以为移动应用、网站应用的智能接口授权，也可以为公众号api授权。对于微信api进行抽象划分似乎没有很好的方式：
+
+* 从应用的角度出发：有些接口在不同应用间共享，通过继承关系的话不合逻辑，不用继承关系的话没有合适的设计模式导致代码重复；
+* 从业务场景出发：综合开发平台和公共平台也不太方便。
+
+上述项目中：
+
+* `weixin-popular`：主要是为了公众号开发，封装的都是公众平台相关接口，且一个`wechat`对应一个应用，其中包含了各种组件的封装，不知道为什么，我是觉得这种设计有点别扭。
+* `wechat`：没有抽象定义模型，只定义了返回结果和一个基本的请求执行器，所有接口通过不同业务划分到不同的类中作为static方法（划分的似乎也有点问题），通过不同的接口参数重载了部分接口以对应不同的场景。这样的设计有点像aliyun的各种服务sdk，但是接口层和模型没有进一步做抽象定义，略有点累赘。
+
+综上，我参考aliyun的sdk，对xwechat的架构设计如下：
+
+* `Wechat`：核心的请求执行器，相当于一个对应微信服务的client，统一发起请求和处理返回结果。
+* `IWechatRequest`：微信api请求的抽象定义接口
+* `IWechatResponse`：微信api返回结果的抽象定义接口
+* `Application`：微信应用，对应移动、网站、公众号、第三方平台等
+* 将请求、数据模型与执行逻辑解耦
+* 尽量不对微信api做逻辑上的划分，只做接口定义和业务划分
 
 # 计划
 我们会针对开发平台、公众平台下的移动、小程序、公众号等应用逐步完善api封装
