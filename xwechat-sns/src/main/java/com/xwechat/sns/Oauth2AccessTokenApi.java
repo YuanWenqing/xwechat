@@ -15,6 +15,7 @@ import com.xwechat.sns.Oauth2AccessTokenApi.Oauth2AccessTokenResponse;
  * 通过code换取access_token
  * 
  * @Note 开发平台
+ * @url https://api.weixin.qq.com/sns/oauth2/access_token?appid=APPID&secret=SECRET&code=CODE&grant_type=authorization_code
  * @see https://open.weixin.qq.com/cgi-bin/showdocument?action=dir_list&t=resource/res_list&verify=1&id=open1419317853&token=&lang=zh_CN
  * @author yuanwq
  */

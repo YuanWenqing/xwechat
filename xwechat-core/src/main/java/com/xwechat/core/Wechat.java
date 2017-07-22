@@ -5,6 +5,7 @@ package com.xwechat.core;
 
 import java.io.IOException;
 
+import com.fasterxml.jackson.databind.DeserializationFeature;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
 import okhttp3.OkHttpClient;
@@ -34,6 +35,8 @@ public class Wechat {
   private Wechat() {
     this.httpClient = new OkHttpClient();
     this.objectMapper = new ObjectMapper();
+    // 避免接口变动导致映射出错，所以忽略未知的字段
+    this.objectMapper.configure(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES, false);
 
     // ThreadFactory threadFactory = new ThreadFactoryBuilder().setDaemon(true)
     // .setNameFormat("wechat-%d").setUncaughtExceptionHandler(new UncaughtExceptionHandler() {

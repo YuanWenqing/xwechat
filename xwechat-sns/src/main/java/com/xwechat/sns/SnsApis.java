@@ -8,5 +8,7 @@ package com.xwechat.sns;
  */
 public interface SnsApis {
   String OAUTH2_ACCESS_TOKEN = "https://api.weixin.qq.com/sns/oauth2/access_token";
+  
+  String SNS_USERINFO = "https://api.weixin.qq.com/sns/userinfo";
 
 }
