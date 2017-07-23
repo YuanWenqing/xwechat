@@ -10,6 +10,7 @@ import com.xwechat.api.Apis;
 import com.xwechat.api.sns.Oauth2AccessTokenApi.Oauth2AccessTokenResponse;
 import com.xwechat.core.AbstractWechatApi;
 import com.xwechat.core.AbstractWechatResponse;
+import com.xwechat.core.IApplicationApi;
 import com.xwechat.def.GrantType;
 
 /**
@@ -20,7 +21,8 @@ import com.xwechat.def.GrantType;
  * @see https://open.weixin.qq.com/cgi-bin/showdocument?action=dir_list&t=resource/res_list&verify=1&id=open1419317853&token=&lang=zh_CN
  * @author yuanwq
  */
-public class Oauth2AccessTokenApi extends AbstractWechatApi<Oauth2AccessTokenResponse> {
+public class Oauth2AccessTokenApi extends AbstractWechatApi<Oauth2AccessTokenResponse>
+                                  implements IApplicationApi {
 
   public Oauth2AccessTokenApi() {
     super(Apis.OAUTH2_ACCESS_TOKEN);

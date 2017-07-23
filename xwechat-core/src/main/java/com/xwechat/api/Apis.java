@@ -8,7 +8,8 @@ package com.xwechat.api;
  */
 public interface Apis {
   String OAUTH2_ACCESS_TOKEN = "https://api.weixin.qq.com/sns/oauth2/access_token";
-  
+
   String SNS_USERINFO = "https://api.weixin.qq.com/sns/userinfo";
 
+  String CLIENT_CREDENTIAL = "https://api.weixin.qq.com/cgi-bin/token";
 }
