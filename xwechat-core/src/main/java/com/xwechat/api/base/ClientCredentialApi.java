@@ -11,7 +11,7 @@ import com.xwechat.api.base.ClientCredentialApi.ClientCredentialResponse;
 import com.xwechat.core.AbstractWechatApi;
 import com.xwechat.core.AbstractWechatResponse;
 import com.xwechat.core.IApplicationApi;
-import com.xwechat.def.GrantType;
+import com.xwechat.enums.GrantType;
 
 /**
  * 获取全局接口调用凭据，应用级access_token，公众号接口和移动应用、网站应用的智能接口都需要

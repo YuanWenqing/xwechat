@@ -12,4 +12,6 @@ public interface Apis {
   String SNS_USERINFO = "https://api.weixin.qq.com/sns/userinfo";
 
   String CLIENT_CREDENTIAL = "https://api.weixin.qq.com/cgi-bin/token";
+
+  String JSAPI_TICKET = "https://api.weixin.qq.com/cgi-bin/ticket/getticket";
 }

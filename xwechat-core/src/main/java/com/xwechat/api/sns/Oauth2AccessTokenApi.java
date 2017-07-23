@@ -11,7 +11,7 @@ import com.xwechat.api.sns.Oauth2AccessTokenApi.Oauth2AccessTokenResponse;
 import com.xwechat.core.AbstractWechatApi;
 import com.xwechat.core.AbstractWechatResponse;
 import com.xwechat.core.IApplicationApi;
-import com.xwechat.def.GrantType;
+import com.xwechat.enums.GrantType;
 
 /**
  * 通过code换取access_token
