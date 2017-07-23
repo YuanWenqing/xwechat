@@ -1,15 +1,16 @@
 /**
  * @author yuanwq, date: 2017年7月22日
  */
-package com.xwechat.sns;
+package com.xwechat.api.sns;
 
 import org.apache.commons.lang3.StringUtils;
 
 import com.google.common.base.Preconditions;
+import com.xwechat.api.Apis;
+import com.xwechat.api.sns.Oauth2AccessTokenApi.Oauth2AccessTokenResponse;
 import com.xwechat.core.AbstractWechatApi;
 import com.xwechat.core.AbstractWechatResponse;
 import com.xwechat.def.GrantType;
-import com.xwechat.sns.Oauth2AccessTokenApi.Oauth2AccessTokenResponse;
 
 /**
  * 通过code换取access_token
@@ -22,7 +23,7 @@ import com.xwechat.sns.Oauth2AccessTokenApi.Oauth2AccessTokenResponse;
 public class Oauth2AccessTokenApi extends AbstractWechatApi<Oauth2AccessTokenResponse> {
 
   public Oauth2AccessTokenApi() {
-    super(SnsApis.OAUTH2_ACCESS_TOKEN);
+    super(Apis.OAUTH2_ACCESS_TOKEN);
     this.urlBuilder.setQueryParameter("grant_type", GrantType.AUTHORIZATION_CODE.asParameter());
   }
 
