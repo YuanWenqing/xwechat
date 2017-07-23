@@ -9,7 +9,7 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 /**
  * @author yuanwq
  */
-public abstract class AbstractWechatReponse implements IWechatResponse {
+public abstract class AbstractWechatResponse implements IWechatResponse {
   private static final ObjectMapper RESPONSE_OBJECT_MAPPER = new ObjectMapper();
 
   protected String bodyText;

@@ -7,7 +7,7 @@ import org.apache.commons.lang3.StringUtils;
 
 import com.google.common.base.Preconditions;
 import com.xwechat.core.AbstractWechatApi;
-import com.xwechat.core.AbstractWechatReponse;
+import com.xwechat.core.AbstractWechatResponse;
 import com.xwechat.sns.SnsUserInfoApi.SnsUserInfo;
 
 /**
@@ -41,7 +41,7 @@ public class SnsUserInfoApi extends AbstractWechatApi<SnsUserInfo> {
     return SnsUserInfo.class;
   }
 
-  public static class SnsUserInfo extends AbstractWechatReponse {
+  public static class SnsUserInfo extends AbstractWechatResponse {
     private String openid;
     private String nickname;
     private int sex;
