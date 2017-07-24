@@ -1,18 +1,19 @@
 /**
  * @author yuanwq, date: 2017年7月22日
  */
-package com.xwechat.def;
+package com.xwechat.enums;
 
 import java.util.List;
 import java.util.Set;
 
 import com.google.common.collect.Lists;
 import com.google.common.collect.Sets;
+import com.xwechat.core.IEnumParameter;
 
 /**
  * @author yuanwq
  */
-public enum Scope {
+public enum Scope implements IEnumParameter {
 
   SNSAPI_BASE(), SNSAPI_USERINFO("/sns/userinfo"), SNSAPI_LOGIN;
 
@@ -34,7 +35,4 @@ public enum Scope {
     return supportApis;
   }
 
-  public String asParameter() {
-    return name().toLowerCase();
-  }
 }

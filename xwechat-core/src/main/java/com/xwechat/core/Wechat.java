@@ -5,8 +5,12 @@ package com.xwechat.core;
 
 import java.io.IOException;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import com.fasterxml.jackson.databind.DeserializationFeature;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.fasterxml.jackson.databind.PropertyNamingStrategy.LowerCaseWithUnderscoresStrategy;
 
 import okhttp3.OkHttpClient;
 import okhttp3.Response;
@@ -17,7 +21,7 @@ import okhttp3.Response;
  * @author yuanwq
  */
 public class Wechat {
-  // private static final Logger logger = LoggerFactory.getLogger(Wechat.class);
+  private static final Logger logger = LoggerFactory.getLogger(Wechat.class);
 
   private static class Holder {
     private static final Wechat instance = new Wechat();
@@ -35,6 +39,8 @@ public class Wechat {
   private Wechat() {
     this.httpClient = new OkHttpClient();
     this.objectMapper = new ObjectMapper();
+    // 变量的驼峰命名和json中的下划线命名映射
+    this.objectMapper.setPropertyNamingStrategy(new LowerCaseWithUnderscoresStrategy());
     // 避免接口变动导致映射出错，所以忽略未知的字段
     this.objectMapper.configure(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES, false);
 
@@ -63,8 +69,14 @@ public class Wechat {
 
   private <R extends IWechatResponse> R mapJsonResponse(String text, Class<R> responseClass)
       throws IOException {
-    R response = objectMapper.readValue(text, responseClass);
-    response.setBodyText(text);
-    return response;
+    try {
+      R response = objectMapper.readValue(text, responseClass);
+      response.setBodyText(text);
+      return response;
+    } catch (IOException e) {
+      logger.warn("fail to map json response, responseClass=" + responseClass + ", text=" + text,
+          e);
+      throw e;
+    }
   }
 }
