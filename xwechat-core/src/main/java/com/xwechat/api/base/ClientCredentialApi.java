@@ -6,11 +6,11 @@ package com.xwechat.api.base;
 import org.apache.commons.lang3.StringUtils;
 
 import com.google.common.base.Preconditions;
+import com.xwechat.api.AbstractWechatApi;
+import com.xwechat.api.AbstractWechatResponse;
 import com.xwechat.api.Apis;
+import com.xwechat.api.ApplicationApi;
 import com.xwechat.api.base.ClientCredentialApi.ClientCredentialResponse;
-import com.xwechat.core.AbstractWechatApi;
-import com.xwechat.core.AbstractWechatResponse;
-import com.xwechat.core.IApplicationApi;
 import com.xwechat.enums.GrantType;
 
 /**
@@ -24,7 +24,7 @@ import com.xwechat.enums.GrantType;
  * @author yuanwq
  */
 public class ClientCredentialApi extends AbstractWechatApi<ClientCredentialResponse>
-                                 implements IApplicationApi {
+                                 implements ApplicationApi {
 
   public ClientCredentialApi() {
     super(Apis.CLIENT_CREDENTIAL);

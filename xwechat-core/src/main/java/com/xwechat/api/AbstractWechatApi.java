@@ -1,7 +1,10 @@
 /**
  * @author yuanwq, date: 2017年7月22日
  */
-package com.xwechat.core;
+package com.xwechat.api;
+
+import com.xwechat.core.IWechatApi;
+import com.xwechat.core.IWechatResponse;
 
 import okhttp3.HttpUrl;
 import okhttp3.Request;

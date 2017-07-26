@@ -6,10 +6,10 @@ package com.xwechat.api.sns;
 import org.apache.commons.lang3.StringUtils;
 
 import com.google.common.base.Preconditions;
+import com.xwechat.api.AbstractWechatApi;
+import com.xwechat.api.AbstractWechatResponse;
 import com.xwechat.api.Apis;
 import com.xwechat.api.sns.SnsUserInfoApi.SnsUserInfo;
-import com.xwechat.core.AbstractWechatApi;
-import com.xwechat.core.AbstractWechatResponse;
 
 /**
  * 开放平台第三方登陆后sns获取用户个人信息（unionId）

@@ -1,10 +1,11 @@
 /**
  * @author yuanwq, date: 2017年7月22日
  */
-package com.xwechat.core;
+package com.xwechat.api;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.xwechat.core.IWechatResponse;
 
 /**
  * @author yuanwq

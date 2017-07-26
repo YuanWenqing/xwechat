@@ -9,12 +9,17 @@ import java.util.List;
 import org.apache.commons.lang3.StringUtils;
 
 import com.google.common.base.Preconditions;
+import com.xwechat.api.AbstractWechatApi;
+import com.xwechat.api.AbstractWechatResponse;
 import com.xwechat.api.Apis;
 import com.xwechat.api.base.GetCallbackIpApi.GetCallbackIpResponse;
-import com.xwechat.core.AbstractWechatApi;
-import com.xwechat.core.AbstractWechatResponse;
 
 /**
+ * 获取微信服务器IP地址
+ * 
+ * @Note 公众平台
+ * @url https://api.weixin.qq.com/cgi-bin/getcallbackip?access_token=ACCESS_TOKEN
+ * @see https://mp.weixin.qq.com/wiki?t=resource/res_main&id=mp1421140187
  * @author yuanwq
  */
 public class GetCallbackIpApi extends AbstractWechatApi<GetCallbackIpResponse> {

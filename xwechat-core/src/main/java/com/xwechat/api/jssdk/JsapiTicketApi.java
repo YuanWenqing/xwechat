@@ -6,10 +6,10 @@ package com.xwechat.api.jssdk;
 import org.apache.commons.lang3.StringUtils;
 
 import com.google.common.base.Preconditions;
+import com.xwechat.api.AbstractWechatApi;
+import com.xwechat.api.AbstractWechatResponse;
 import com.xwechat.api.Apis;
 import com.xwechat.api.jssdk.JsapiTicketApi.JsapiTicketResponse;
-import com.xwechat.core.AbstractWechatApi;
-import com.xwechat.core.AbstractWechatResponse;
 import com.xwechat.enums.TicketType;
 
 /**
