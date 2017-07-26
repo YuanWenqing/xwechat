@@ -6,7 +6,6 @@ package com.xwechat.api.base;
 import org.apache.commons.lang3.StringUtils;
 
 import com.google.common.base.Preconditions;
-import com.xwechat.api.AbstractWechatApi;
 import com.xwechat.api.AbstractWechatResponse;
 import com.xwechat.api.Apis;
 import com.xwechat.api.ApplicationApi;
@@ -23,8 +22,7 @@ import com.xwechat.enums.GrantType;
  * @see https://mp.weixin.qq.com/wiki?t=resource/res_main&id=mp1478575250_DCOPM
  * @author yuanwq
  */
-public class ClientCredentialApi extends AbstractWechatApi<ClientCredentialResponse>
-                                 implements ApplicationApi {
+public class ClientCredentialApi extends ApplicationApi<ClientCredentialResponse> {
 
   public ClientCredentialApi() {
     super(Apis.CLIENT_CREDENTIAL);

@@ -6,7 +6,6 @@ package com.xwechat.api.sns;
 import org.apache.commons.lang3.StringUtils;
 
 import com.google.common.base.Preconditions;
-import com.xwechat.api.AbstractWechatApi;
 import com.xwechat.api.AbstractWechatResponse;
 import com.xwechat.api.Apis;
 import com.xwechat.api.ApplicationApi;
@@ -21,8 +20,7 @@ import com.xwechat.enums.GrantType;
  * @see https://open.weixin.qq.com/cgi-bin/showdocument?action=dir_list&t=resource/res_list&verify=1&id=open1419317853&token=&lang=zh_CN
  * @author yuanwq
  */
-public class Oauth2AccessTokenApi extends AbstractWechatApi<Oauth2AccessTokenResponse>
-                                  implements ApplicationApi {
+public class Oauth2AccessTokenApi extends ApplicationApi<Oauth2AccessTokenResponse> {
 
   public Oauth2AccessTokenApi() {
     super(Apis.OAUTH2_ACCESS_TOKEN);
