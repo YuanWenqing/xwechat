@@ -8,7 +8,7 @@ import org.apache.commons.lang3.StringUtils;
 import com.google.common.base.Preconditions;
 import com.xwechat.api.Apis;
 import com.xwechat.api.AuthorizedApi;
-import com.xwechat.api.mp.UserInfoApi.MpUserInfoResponse;
+import com.xwechat.api.mp.UserInfoApi.UserInfoResponse;
 import com.xwechat.core.IWechatResponse;
 
 /**
@@ -19,7 +19,7 @@ import com.xwechat.core.IWechatResponse;
  * @see https://mp.weixin.qq.com/wiki?t=resource/res_main&id=mp1421140839
  * @author yuanwq
  */
-public class UserInfoApi extends AuthorizedApi<MpUserInfoResponse> {
+public class UserInfoApi extends AuthorizedApi<UserInfoResponse> {
 
   public UserInfoApi() {
     super(Apis.MP_USERINFO);
@@ -33,11 +33,11 @@ public class UserInfoApi extends AuthorizedApi<MpUserInfoResponse> {
   }
 
   @Override
-  public Class<MpUserInfoResponse> getResponseClass() {
-    return MpUserInfoResponse.class;
+  public Class<UserInfoResponse> getResponseClass() {
+    return UserInfoResponse.class;
   }
 
-  public static class MpUserInfoResponse extends MpUserInfo implements IWechatResponse {
+  public static class UserInfoResponse extends MpUserInfo implements IWechatResponse {
     // see MpUserInfo
   }
 }

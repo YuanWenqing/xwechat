@@ -11,7 +11,7 @@ import com.fasterxml.jackson.databind.node.ObjectNode;
 import com.google.common.base.Preconditions;
 import com.xwechat.api.Apis;
 import com.xwechat.api.AuthorizedApi;
-import com.xwechat.api.mp.UserInfoBatchApi.MpUserInfoBatchResponse;
+import com.xwechat.api.mp.UserInfoBatchApi.UserInfoBatchResponse;
 import com.xwechat.core.IWechatResponse;
 import com.xwechat.util.CollectionUtil;
 
@@ -26,7 +26,7 @@ import okhttp3.RequestBody;
  * @see https://mp.weixin.qq.com/wiki?t=resource/res_main&id=mp1421140839
  * @author yuanwq
  */
-public class UserInfoBatchApi extends AuthorizedApi<MpUserInfoBatchResponse> {
+public class UserInfoBatchApi extends AuthorizedApi<UserInfoBatchResponse> {
 
   private final ObjectNode root;
 
@@ -52,11 +52,11 @@ public class UserInfoBatchApi extends AuthorizedApi<MpUserInfoBatchResponse> {
   }
 
   @Override
-  public Class<MpUserInfoBatchResponse> getResponseClass() {
-    return MpUserInfoBatchResponse.class;
+  public Class<UserInfoBatchResponse> getResponseClass() {
+    return UserInfoBatchResponse.class;
   }
 
-  public static class MpUserInfoBatchResponse implements IWechatResponse {
+  public static class UserInfoBatchResponse implements IWechatResponse {
     private List<MpUserInfo> userInfoList;
 
     public void setUserInfoList(List<MpUserInfo> userInfoList) {
