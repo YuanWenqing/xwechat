@@ -18,4 +18,7 @@ public interface Apis {
   String MP_OPENID_LIST = "https://api.weixin.qq.com/cgi-bin/user/get";
 
   String JSAPI_TICKET = "https://api.weixin.qq.com/cgi-bin/ticket/getticket";
+
+  String MESSAGE_SEND = "https://api.weixin.qq.com/cgi-bin/message/mass/send";
+  String MESSAGE_SENALL = "https://api.weixin.qq.com/cgi-bin/message/mass/sendall";
 }
