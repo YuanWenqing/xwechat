@@ -9,6 +9,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import com.fasterxml.jackson.databind.DeserializationFeature;
+import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.PropertyNamingStrategy.LowerCaseWithUnderscoresStrategy;
 
@@ -62,20 +63,28 @@ public class Wechat {
     return httpClient.newCall(request.toOkHttpRequest()).execute();
   }
 
-  public <R extends IWechatResponse> R call(IWechatApi<R> request) throws IOException {
+  public <R extends IWechatResponse> ResponseWrapper<R> call(IWechatApi<R> request)
+      throws IOException {
     Response rawResponse = rawCall(request);
-    return mapJsonResponse(rawResponse.body().string(), request.getResponseClass());
+    ResponseWrapper<R> wrapper = new ResponseWrapper<>(rawResponse.body().string());
+    parseResponse(wrapper, request.getResponseClass());
+    return wrapper;
   }
 
-  private <R extends IWechatResponse> R mapJsonResponse(String text, Class<R> responseClass)
-      throws IOException {
+  private <R extends IWechatResponse> void parseResponse(ResponseWrapper<R> wrapper,
+      Class<R> responseClass) throws IOException {
     try {
-      R response = objectMapper.readValue(text, responseClass);
-      response.setBodyText(text);
-      return response;
+      JsonNode root = objectMapper.readTree(wrapper.getBody());
+      if (root.has("errcode")) {
+        wrapper.setErrcode(root.get("errcode").asInt());
+        wrapper.setErrmsg(root.get("errmsg").asText());
+        return;
+      }
+      R response = objectMapper.reader(responseClass).readValue(root);
+      wrapper.setResponse(response);
     } catch (IOException e) {
-      logger.warn("fail to map json response, responseClass=" + responseClass + ", text=" + text,
-          e);
+      logger.warn("fail to parse json response, responseClass=" + responseClass + ", text="
+          + wrapper.getBody(), e);
       throw e;
     }
   }

@@ -7,9 +7,9 @@ import org.apache.commons.lang3.StringUtils;
 
 import com.google.common.base.Preconditions;
 import com.xwechat.api.Apis;
+import com.xwechat.api.AuthorizedApi;
 import com.xwechat.api.sns.SnsUserInfoApi.SnsUserInfo;
-import com.xwechat.core.AbstractWechatApi;
-import com.xwechat.core.AbstractWechatResponse;
+import com.xwechat.core.IWechatResponse;
 
 /**
  * 开放平台第三方登陆后sns获取用户个人信息（unionId）
@@ -19,16 +19,10 @@ import com.xwechat.core.AbstractWechatResponse;
  * @see https://open.weixin.qq.com/cgi-bin/showdocument?action=dir_list&t=resource/res_list&verify=1&id=open1419317853&token=&lang=zh_CN
  * @author yuanwq
  */
-public class SnsUserInfoApi extends AbstractWechatApi<SnsUserInfo> {
+public class SnsUserInfoApi extends AuthorizedApi<SnsUserInfo> {
 
   public SnsUserInfoApi() {
     super(Apis.SNS_USERINFO);
-  }
-
-  public SnsUserInfoApi setAccessToken(String accessToken) {
-    Preconditions.checkArgument(StringUtils.isNotBlank(accessToken), "blank accessToken");
-    this.urlBuilder.setQueryParameter("access_token", accessToken);
-    return this;
   }
 
   public SnsUserInfoApi setOpenId(String openId) {
@@ -42,7 +36,7 @@ public class SnsUserInfoApi extends AbstractWechatApi<SnsUserInfo> {
     return SnsUserInfo.class;
   }
 
-  public static class SnsUserInfo extends AbstractWechatResponse {
+  public static class SnsUserInfo implements IWechatResponse {
     private String openid;
     private String nickname;
     private int sex;

@@ -7,10 +7,9 @@ import org.apache.commons.lang3.StringUtils;
 
 import com.google.common.base.Preconditions;
 import com.xwechat.api.Apis;
+import com.xwechat.api.ApplicationApi;
 import com.xwechat.api.base.ClientCredentialApi.ClientCredentialResponse;
-import com.xwechat.core.AbstractWechatApi;
-import com.xwechat.core.AbstractWechatResponse;
-import com.xwechat.core.IApplicationApi;
+import com.xwechat.core.IWechatResponse;
 import com.xwechat.enums.GrantType;
 
 /**
@@ -23,8 +22,7 @@ import com.xwechat.enums.GrantType;
  * @see https://mp.weixin.qq.com/wiki?t=resource/res_main&id=mp1478575250_DCOPM
  * @author yuanwq
  */
-public class ClientCredentialApi extends AbstractWechatApi<ClientCredentialResponse>
-                                 implements IApplicationApi {
+public class ClientCredentialApi extends ApplicationApi<ClientCredentialResponse> {
 
   public ClientCredentialApi() {
     super(Apis.CLIENT_CREDENTIAL);
@@ -48,7 +46,7 @@ public class ClientCredentialApi extends AbstractWechatApi<ClientCredentialRespo
     return ClientCredentialResponse.class;
   }
 
-  public static class ClientCredentialResponse extends AbstractWechatResponse {
+  public static class ClientCredentialResponse implements IWechatResponse {
     private String accessToken;
     private int expiresIn;
 
