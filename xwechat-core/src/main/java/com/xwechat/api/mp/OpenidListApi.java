@@ -7,7 +7,6 @@ import java.util.List;
 
 import org.apache.commons.lang3.StringUtils;
 
-import com.google.common.base.Preconditions;
 import com.xwechat.api.Apis;
 import com.xwechat.api.AuthorizedApi;
 import com.xwechat.api.mp.OpenidListApi.OpenidListResponse;
@@ -28,9 +27,11 @@ public class OpenidListApi extends AuthorizedApi<OpenidListResponse> {
     super(Apis.MP_OPENID_LIST);
   }
 
+  /** 不填或为空或为null，则默认从第一个拉取 */
   public OpenidListApi setNextOpenid(String nextOpenid) {
-    Preconditions.checkArgument(StringUtils.isNotBlank(nextOpenid), "blank nextOpenid");
-    this.urlBuilder.setQueryParameter("next_openid", nextOpenid);
+    if (StringUtils.isNotBlank(nextOpenid)) {
+      this.urlBuilder.setQueryParameter("next_openid", nextOpenid);
+    }
     return this;
   }
 
