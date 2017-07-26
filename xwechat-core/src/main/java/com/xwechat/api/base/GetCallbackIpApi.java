@@ -6,12 +6,9 @@ package com.xwechat.api.base;
 import java.util.Collections;
 import java.util.List;
 
-import org.apache.commons.lang3.StringUtils;
-
-import com.google.common.base.Preconditions;
-import com.xwechat.api.AbstractWechatApi;
 import com.xwechat.api.AbstractWechatResponse;
 import com.xwechat.api.Apis;
+import com.xwechat.api.AuthorizedApi;
 import com.xwechat.api.base.GetCallbackIpApi.GetCallbackIpResponse;
 
 /**
@@ -22,16 +19,10 @@ import com.xwechat.api.base.GetCallbackIpApi.GetCallbackIpResponse;
  * @see https://mp.weixin.qq.com/wiki?t=resource/res_main&id=mp1421140187
  * @author yuanwq
  */
-public class GetCallbackIpApi extends AbstractWechatApi<GetCallbackIpResponse> {
+public class GetCallbackIpApi extends AuthorizedApi<GetCallbackIpResponse> {
 
   public GetCallbackIpApi() {
     super(Apis.GET_CALLBACK_IP);
-  }
-
-  public GetCallbackIpApi setAccessToken(String accessToken) {
-    Preconditions.checkArgument(StringUtils.isNotBlank(accessToken), "blank accessToken");
-    this.urlBuilder.setQueryParameter("access_token", accessToken);
-    return this;
   }
 
   @Override

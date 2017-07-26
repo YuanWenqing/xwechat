@@ -6,9 +6,9 @@ package com.xwechat.api.sns;
 import org.apache.commons.lang3.StringUtils;
 
 import com.google.common.base.Preconditions;
-import com.xwechat.api.AbstractWechatApi;
 import com.xwechat.api.AbstractWechatResponse;
 import com.xwechat.api.Apis;
+import com.xwechat.api.AuthorizedApi;
 import com.xwechat.api.sns.SnsUserInfoApi.SnsUserInfo;
 
 /**
@@ -19,16 +19,10 @@ import com.xwechat.api.sns.SnsUserInfoApi.SnsUserInfo;
  * @see https://open.weixin.qq.com/cgi-bin/showdocument?action=dir_list&t=resource/res_list&verify=1&id=open1419317853&token=&lang=zh_CN
  * @author yuanwq
  */
-public class SnsUserInfoApi extends AbstractWechatApi<SnsUserInfo> {
+public class SnsUserInfoApi extends AuthorizedApi<SnsUserInfo> {
 
   public SnsUserInfoApi() {
     super(Apis.SNS_USERINFO);
-  }
-
-  public SnsUserInfoApi setAccessToken(String accessToken) {
-    Preconditions.checkArgument(StringUtils.isNotBlank(accessToken), "blank accessToken");
-    this.urlBuilder.setQueryParameter("access_token", accessToken);
-    return this;
   }
 
   public SnsUserInfoApi setOpenId(String openId) {

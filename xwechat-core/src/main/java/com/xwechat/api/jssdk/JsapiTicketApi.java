@@ -3,12 +3,9 @@
  */
 package com.xwechat.api.jssdk;
 
-import org.apache.commons.lang3.StringUtils;
-
-import com.google.common.base.Preconditions;
-import com.xwechat.api.AbstractWechatApi;
 import com.xwechat.api.AbstractWechatResponse;
 import com.xwechat.api.Apis;
+import com.xwechat.api.AuthorizedApi;
 import com.xwechat.api.jssdk.JsapiTicketApi.JsapiTicketResponse;
 import com.xwechat.enums.TicketType;
 
@@ -20,17 +17,11 @@ import com.xwechat.enums.TicketType;
  * @see https://mp.weixin.qq.com/wiki?t=resource/res_main&id=mp1421140183
  * @author yuanwq
  */
-public class JsapiTicketApi extends AbstractWechatApi<JsapiTicketResponse> {
+public class JsapiTicketApi extends AuthorizedApi<JsapiTicketResponse> {
 
   public JsapiTicketApi() {
     super(Apis.JSAPI_TICKET);
     this.urlBuilder.setQueryParameter("type", TicketType.JSAPI.asParameter());
-  }
-
-  public JsapiTicketApi setAccessToken(String accessToken) {
-    Preconditions.checkArgument(StringUtils.isNotBlank(accessToken), "blank accessToken");
-    this.urlBuilder.setQueryParameter("access_token", accessToken);
-    return this;
   }
 
   @Override
