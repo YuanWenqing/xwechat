@@ -9,8 +9,7 @@ import java.util.List;
 /**
  * @author yuanwq
  */
-public class MpUserInfo {
-  private String subscribe;
+public class UserInfo {
   private String openid;
   private String nickname;
   private int sex;
@@ -19,17 +18,19 @@ public class MpUserInfo {
   private String province;
   private String country;
   private String headimgurl;
-  private long subscribeTime;
   private String unionid;
+
+  private int subscribe;
+  private long subscribeTime;
   private String remark;
   private int groupid;
   private List<Integer> tagidList;
 
-  public String getSubscribe() {
+  public int getSubscribe() {
     return subscribe;
   }
 
-  public void setSubscribe(String subscribe) {
+  public void setSubscribe(int subscribe) {
     this.subscribe = subscribe;
   }
 

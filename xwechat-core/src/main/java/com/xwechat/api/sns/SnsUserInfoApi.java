@@ -41,12 +41,13 @@ public class SnsUserInfoApi extends AuthorizedApi<SnsUserInfo> {
     private String nickname;
     private int sex;
     private String language;
-    private String province;
     private String city;
+    private String province;
     private String country;
     private String headimgurl;
-    private String[] privilege;
     private String unionid;
+
+    private String[] privilege;
 
     public String getOpenid() {
       return openid;

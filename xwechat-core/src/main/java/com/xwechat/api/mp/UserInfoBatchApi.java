@@ -58,13 +58,13 @@ public class UserInfoBatchApi extends AuthorizedApi<UserInfoBatchResponse> {
   }
 
   public static class UserInfoBatchResponse implements IWechatResponse {
-    private List<MpUserInfo> userInfoList;
+    private List<UserInfo> userInfoList;
 
-    public void setUserInfoList(List<MpUserInfo> userInfoList) {
+    public void setUserInfoList(List<UserInfo> userInfoList) {
       this.userInfoList = userInfoList;
     }
 
-    public List<MpUserInfo> getUserInfoList() {
+    public List<UserInfo> getUserInfoList() {
       return CollectionUtil.unmodifiableList(userInfoList);
     }
   }

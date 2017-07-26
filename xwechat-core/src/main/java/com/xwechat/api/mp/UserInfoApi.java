@@ -37,7 +37,7 @@ public class UserInfoApi extends AuthorizedApi<UserInfoResponse> {
     return UserInfoResponse.class;
   }
 
-  public static class UserInfoResponse extends MpUserInfo implements IWechatResponse {
+  public static class UserInfoResponse extends UserInfo implements IWechatResponse {
     // see MpUserInfo
   }
 }
