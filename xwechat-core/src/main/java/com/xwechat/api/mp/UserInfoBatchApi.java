@@ -33,7 +33,7 @@ public class UserInfoBatchApi extends AuthorizedApi<UserInfoBatchResponse> {
 
   public UserInfoBatchApi() {
     super(Apis.MP_USERINFO_BATCH);
-    root = JsonUtil.COMMON_OBJECT_MAPPER.createObjectNode();
+    root = JsonUtil.DEFAULT_OBJECT_MAPPER.createObjectNode();
     root.putArray("user_list");
   }
 
@@ -43,13 +43,13 @@ public class UserInfoBatchApi extends AuthorizedApi<UserInfoBatchResponse> {
     for (String openid : openids) {
       userList.addObject().put("openid", openid).put("lang", "zh_CN");
     }
-    String content = JsonUtil.writeAsString(JsonUtil.COMMON_OBJECT_MAPPER, root);
+    String content = JsonUtil.writeAsString(JsonUtil.DEFAULT_OBJECT_MAPPER, root);
     this.requestBuilder.post(RequestBody.create(MediaType.parse("text/json"), content));
     return this;
   }
 
   public String getPrettyBody() {
-    return JsonUtil.writeAsPrettyString(JsonUtil.COMMON_OBJECT_MAPPER, root);
+    return JsonUtil.writeAsPrettyString(JsonUtil.DEFAULT_OBJECT_MAPPER, root);
   }
 
   @Override

@@ -11,7 +11,7 @@ import com.fasterxml.jackson.databind.ObjectWriter;
  * @author yuanwq
  */
 public abstract class JsonUtil {
-  public static final ObjectMapper COMMON_OBJECT_MAPPER = new ObjectMapper();
+  public static final ObjectMapper DEFAULT_OBJECT_MAPPER = new ObjectMapper();
 
   public static String writeAsString(ObjectMapper objectMapper, Object value) {
     try {
