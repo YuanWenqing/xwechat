@@ -19,6 +19,10 @@ public abstract class AuthorizedApi<R extends IWechatResponse> extends AbstractW
     super(endpoint);
   }
 
+  public AuthorizedApi(String endpoint, Method method) {
+    super(endpoint, method);
+  }
+
   public AuthorizedApi<R> setAccessToken(String accessToken) {
     Preconditions.checkArgument(StringUtils.isNotBlank(accessToken), "blank accessToken");
     this.urlBuilder.setQueryParameter("access_token", accessToken);

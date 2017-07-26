@@ -11,12 +11,12 @@ import com.fasterxml.jackson.databind.node.ObjectNode;
 import com.google.common.base.Preconditions;
 import com.xwechat.api.Apis;
 import com.xwechat.api.AuthorizedApi;
+import com.xwechat.api.Method;
 import com.xwechat.api.mp.UserInfoBatchApi.UserInfoBatchResponse;
 import com.xwechat.core.IWechatResponse;
 import com.xwechat.util.CollectionUtil;
 import com.xwechat.util.JsonUtil;
 
-import okhttp3.MediaType;
 import okhttp3.RequestBody;
 
 /**
@@ -32,7 +32,7 @@ public class UserInfoBatchApi extends AuthorizedApi<UserInfoBatchResponse> {
   private final ObjectNode root;
 
   public UserInfoBatchApi() {
-    super(Apis.MP_USERINFO_BATCH);
+    super(Apis.MP_USERINFO_BATCH, Method.POST);
     root = JsonUtil.DEFAULT_OBJECT_MAPPER.createObjectNode();
     root.putArray("user_list");
   }
@@ -44,7 +44,7 @@ public class UserInfoBatchApi extends AuthorizedApi<UserInfoBatchResponse> {
       userList.addObject().put("openid", openid).put("lang", "zh_CN");
     }
     String content = JsonUtil.writeAsString(JsonUtil.DEFAULT_OBJECT_MAPPER, root);
-    this.requestBuilder.post(RequestBody.create(MediaType.parse("text/json"), content));
+    setRequestBody(RequestBody.create(JSON_MEDIA_TYPE, content));
     return this;
   }
 
