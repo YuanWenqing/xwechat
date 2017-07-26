@@ -19,7 +19,7 @@ import okhttp3.MediaType;
 import okhttp3.RequestBody;
 
 /**
- * 公众平台获取用户基本信息（UnionId），公众号和小程序使用
+ * 批量获取用户基本信息，公众号和小程序使用
  * 
  * @Note 公众平台
  * @url https://api.weixin.qq.com/cgi-bin/user/info/batchget?access_token=ACCESS_TOKEN

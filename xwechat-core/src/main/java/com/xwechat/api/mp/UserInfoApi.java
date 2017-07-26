@@ -12,7 +12,7 @@ import com.xwechat.api.mp.UserInfoApi.MpUserInfoResponse;
 import com.xwechat.core.IWechatResponse;
 
 /**
- * 公众平台获取用户基本信息（UnionId），公众号和小程序使用
+ * 获取用户基本信息（UnionId），公众号和小程序使用
  * 
  * @Note 公众平台
  * @url https://api.weixin.qq.com/cgi-bin/user/info?access_token=ACCESS_TOKEN&openid=OPENID&lang=zh_CN
