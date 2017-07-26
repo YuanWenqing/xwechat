@@ -8,7 +8,7 @@ import org.apache.commons.lang3.StringUtils;
 import com.google.common.base.Preconditions;
 import com.xwechat.api.Apis;
 import com.xwechat.api.AuthorizedApi;
-import com.xwechat.api.mp.MpUserInfoApi.MpUserInfoResponse;
+import com.xwechat.api.mp.UserInfoApi.MpUserInfoResponse;
 import com.xwechat.core.IWechatResponse;
 
 /**
@@ -19,14 +19,14 @@ import com.xwechat.core.IWechatResponse;
  * @see https://mp.weixin.qq.com/wiki?t=resource/res_main&id=mp1421140839
  * @author yuanwq
  */
-public class MpUserInfoApi extends AuthorizedApi<MpUserInfoResponse> {
+public class UserInfoApi extends AuthorizedApi<MpUserInfoResponse> {
 
-  public MpUserInfoApi() {
+  public UserInfoApi() {
     super(Apis.MP_USERINFO);
     this.urlBuilder.setQueryParameter("lang", "zh_CN");
   }
 
-  public MpUserInfoApi setOpenId(String openId) {
+  public UserInfoApi setOpenId(String openId) {
     Preconditions.checkArgument(StringUtils.isNotBlank(openId), "blank openid");
     this.urlBuilder.setQueryParameter("openid", openId);
     return this;

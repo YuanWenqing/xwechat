@@ -11,7 +11,7 @@ import com.fasterxml.jackson.databind.node.ObjectNode;
 import com.google.common.base.Preconditions;
 import com.xwechat.api.Apis;
 import com.xwechat.api.AuthorizedApi;
-import com.xwechat.api.mp.MpUserInfoBatchApi.MpUserInfoBatchResponse;
+import com.xwechat.api.mp.UserInfoBatchApi.MpUserInfoBatchResponse;
 import com.xwechat.core.IWechatResponse;
 import com.xwechat.util.CollectionUtil;
 
@@ -26,17 +26,17 @@ import okhttp3.RequestBody;
  * @see https://mp.weixin.qq.com/wiki?t=resource/res_main&id=mp1421140839
  * @author yuanwq
  */
-public class MpUserInfoBatchApi extends AuthorizedApi<MpUserInfoBatchResponse> {
+public class UserInfoBatchApi extends AuthorizedApi<MpUserInfoBatchResponse> {
 
   private final ObjectNode root;
 
-  public MpUserInfoBatchApi() {
+  public UserInfoBatchApi() {
     super(Apis.MP_USERINFO_BATCH);
     root = API_OBJECT_MAPPER.createObjectNode();
     root.putArray("user_list");
   }
 
-  public MpUserInfoBatchApi addAllOpenId(Collection<String> openIds) {
+  public UserInfoBatchApi addAllOpenId(Collection<String> openIds) {
     Preconditions.checkArgument(openIds != null && !openIds.isEmpty(), "empty openIds");
     ArrayNode userList = root.withArray("user_list");
     for (String openId : openIds) {
