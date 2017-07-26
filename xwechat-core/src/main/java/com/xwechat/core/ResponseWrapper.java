@@ -19,15 +19,16 @@ import com.google.common.base.MoreObjects;
 public class ResponseWrapper<R extends IWechatResponse> {
   private static final ObjectMapper RESPONSE_OBJECT_MAPPER = new ObjectMapper();
 
-  protected final String bodyText;
+  protected final String body;
   protected R response;
 
   public ResponseWrapper(String bodyText) {
-    this.bodyText = bodyText;
+    this.body = bodyText;
   }
 
-  public String getBodyText() {
-    return bodyText;
+  /** 接口返回的Response Body */
+  public String getBody() {
+    return body;
   }
 
   public void setResponse(R response) {
@@ -42,7 +43,7 @@ public class ResponseWrapper<R extends IWechatResponse> {
   @Override
   public String toString() {
     String responseText = toString(response);
-    return MoreObjects.toStringHelper(getClass()).add("parsed", responseText).add("body", bodyText)
+    return MoreObjects.toStringHelper(getClass()).add("response", responseText).add("body", body)
         .toString();
   }
 

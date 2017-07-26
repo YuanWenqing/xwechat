@@ -12,8 +12,7 @@ import okhttp3.Request;
 /**
  * @author yuanwq
  */
-public abstract class AbstractWechatApi<R extends IWechatResponse>
-                                           implements IWechatApi<R> {
+public abstract class AbstractWechatApi<R extends IWechatResponse> implements IWechatApi<R> {
   protected final Request.Builder requestBuilder = new Request.Builder();
   protected final HttpUrl.Builder urlBuilder;
 

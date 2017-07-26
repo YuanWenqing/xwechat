@@ -66,7 +66,7 @@ public class Wechat {
       throws IOException {
     Response rawResponse = rawCall(request);
     ResponseWrapper<R> wrapper = new ResponseWrapper<>(rawResponse.body().string());
-    R response = parseResponse(rawResponse.body().string(), request.getResponseClass());
+    R response = parseResponse(wrapper.getBody(), request.getResponseClass());
     wrapper.setResponse(response);
     return wrapper;
   }
