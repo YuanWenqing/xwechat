@@ -14,6 +14,7 @@ import com.xwechat.api.AuthorizedApi;
 import com.xwechat.api.mp.UserInfoBatchApi.UserInfoBatchResponse;
 import com.xwechat.core.IWechatResponse;
 import com.xwechat.util.CollectionUtil;
+import com.xwechat.util.JsonUtil;
 
 import okhttp3.MediaType;
 import okhttp3.RequestBody;
@@ -32,7 +33,7 @@ public class UserInfoBatchApi extends AuthorizedApi<UserInfoBatchResponse> {
 
   public UserInfoBatchApi() {
     super(Apis.MP_USERINFO_BATCH);
-    root = API_OBJECT_MAPPER.createObjectNode();
+    root = JsonUtil.COMMON_OBJECT_MAPPER.createObjectNode();
     root.putArray("user_list");
   }
 
@@ -42,13 +43,13 @@ public class UserInfoBatchApi extends AuthorizedApi<UserInfoBatchResponse> {
     for (String openid : openids) {
       userList.addObject().put("openid", openid).put("lang", "zh_CN");
     }
-    String content = writeJsonAsString(root);
+    String content = JsonUtil.writeAsString(JsonUtil.COMMON_OBJECT_MAPPER, root);
     this.requestBuilder.post(RequestBody.create(MediaType.parse("text/json"), content));
     return this;
   }
 
   public String getPrettyBody() {
-    return writeJsonAsString(root, true);
+    return JsonUtil.writeAsPrettyString(JsonUtil.COMMON_OBJECT_MAPPER, root);
   }
 
   @Override

@@ -7,10 +7,6 @@ import java.io.IOException;
 
 import org.apache.commons.io.IOUtils;
 
-import com.fasterxml.jackson.core.JsonProcessingException;
-import com.fasterxml.jackson.databind.JsonNode;
-import com.fasterxml.jackson.databind.ObjectMapper;
-import com.fasterxml.jackson.databind.ObjectWriter;
 import com.xwechat.core.IWechatApi;
 import com.xwechat.core.IWechatResponse;
 
@@ -23,7 +19,6 @@ import okio.Buffer;
  * @author yuanwq
  */
 public abstract class AbstractWechatApi<R extends IWechatResponse> implements IWechatApi<R> {
-  protected static final ObjectMapper API_OBJECT_MAPPER = new ObjectMapper();
 
   protected final Request.Builder requestBuilder = new Request.Builder();
   protected final HttpUrl.Builder urlBuilder;
@@ -62,7 +57,7 @@ public abstract class AbstractWechatApi<R extends IWechatResponse> implements IW
       Buffer buffer = new Buffer();
       try {
         body.writeTo(buffer);
-        IOUtils.toString(buffer.inputStream(), body.contentType().charset());
+        return IOUtils.toString(buffer.inputStream(), body.contentType().charset());
       } catch (IOException e) {
         e.printStackTrace();
       }
@@ -70,21 +65,4 @@ public abstract class AbstractWechatApi<R extends IWechatResponse> implements IW
     return "[<" + body.contentType().toString() + ">]";
   }
 
-  protected static String writeJsonAsString(JsonNode node) {
-    return writeJsonAsString(node, false);
-  }
-
-  protected static String writeJsonAsString(JsonNode node, boolean pretty) {
-    try {
-      ObjectWriter objectWriter;
-      if (pretty) {
-        objectWriter = API_OBJECT_MAPPER.writerWithDefaultPrettyPrinter();
-      } else {
-        objectWriter = API_OBJECT_MAPPER.writer();
-      }
-      return objectWriter.writeValueAsString(node);
-    } catch (JsonProcessingException e) {
-      throw new RuntimeException("never here, node=" + node, e);
-    }
-  }
 }
