@@ -5,17 +5,18 @@ package com.xwechat.api.msg;
 
 import com.xwechat.api.Apis;
 import com.xwechat.api.AuthorizedApi;
+import com.xwechat.api.Method;
 
 import okhttp3.RequestBody;
 
 /**
  * @author yuanwq
  */
-public class SendMessageApi extends AuthorizedApi<MessageSendResponse> {
+public class SendMessageApi extends AuthorizedApi<SendMessageResponse> {
   private Message message;
 
   public SendMessageApi() {
-    super(Apis.MESSAGE_SEND);
+    super(Apis.MESSAGE_SEND, Method.POST);
   }
 
   public SendMessageApi setMessage(Message msg) {
@@ -29,7 +30,7 @@ public class SendMessageApi extends AuthorizedApi<MessageSendResponse> {
   }
 
   @Override
-  public Class<MessageSendResponse> getResponseClass() {
-    return MessageSendResponse.class;
+  public Class<SendMessageResponse> getResponseClass() {
+    return SendMessageResponse.class;
   }
 }

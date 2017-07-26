@@ -37,8 +37,10 @@ public class UserInfoBatchApi extends AuthorizedApi<UserInfoBatchResponse> {
     root.putArray("user_list");
   }
 
-  public UserInfoBatchApi addAllOpenid(Collection<String> openids) {
+  /** 一次最多100个 */
+  public UserInfoBatchApi setOpenids(Collection<String> openids) {
     Preconditions.checkArgument(openids != null && !openids.isEmpty(), "empty openids");
+    Preconditions.checkArgument(openids.size() <= 100, "at most 100 openids");
     ArrayNode userList = root.withArray("user_list");
     for (String openid : openids) {
       userList.addObject().put("openid", openid).put("lang", "zh_CN");

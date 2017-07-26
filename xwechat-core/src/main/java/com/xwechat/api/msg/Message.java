@@ -71,9 +71,13 @@ public class Message {
     this.openids.clear();
   }
 
-  /** 将覆盖toAll和tagId设置：{@code toAll=false, tagId=null} */
+  /**
+   * 将覆盖toAll和tagId设置：{@code toAll=false, tagId=null}<br>
+   * 最少2个，最多10000个
+   */
   public void addOpenids(Collection<String> openids) {
     Preconditions.checkArgument(openids != null && !openids.isEmpty());
+    Preconditions.checkArgument(openids.size() >= 2 && openids.size() < 10000);;
     this.openids.addAll(openids);
     this.toAll = false;
     this.tagId = null;

@@ -8,7 +8,7 @@ import com.xwechat.core.IWechatResponse;
 /**
  * @author yuanwq
  */
-public class MessageSendResponse implements IWechatResponse {
+public class SendMessageResponse implements IWechatResponse {
   private int errcode;
   private int errmsg;
 
