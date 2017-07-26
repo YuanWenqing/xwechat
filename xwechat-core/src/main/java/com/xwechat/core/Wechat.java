@@ -9,6 +9,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import com.fasterxml.jackson.databind.DeserializationFeature;
+import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.PropertyNamingStrategy.LowerCaseWithUnderscoresStrategy;
 
@@ -66,19 +67,24 @@ public class Wechat {
       throws IOException {
     Response rawResponse = rawCall(request);
     ResponseWrapper<R> wrapper = new ResponseWrapper<>(rawResponse.body().string());
-    R response = parseResponse(wrapper.getBody(), request.getResponseClass());
-    wrapper.setResponse(response);
+    parseResponse(wrapper, request.getResponseClass());
     return wrapper;
   }
 
-  private <R extends IWechatResponse> R parseResponse(String text, Class<R> responseClass)
-      throws IOException {
+  private <R extends IWechatResponse> void parseResponse(ResponseWrapper<R> wrapper,
+      Class<R> responseClass) throws IOException {
     try {
-      R response = objectMapper.readValue(text, responseClass);
-      return response;
+      JsonNode root = objectMapper.readTree(wrapper.getBody());
+      if (root.has("errcode")) {
+        wrapper.setErrcode(root.get("errcode").asInt());
+        wrapper.setErrmsg(root.get("errmsg").asText());
+        return;
+      }
+      R response = objectMapper.reader(responseClass).readValue(root);
+      wrapper.setResponse(response);
     } catch (IOException e) {
-      logger.warn("fail to map json response, responseClass=" + responseClass + ", text=" + text,
-          e);
+      logger.warn("fail to parse json response, responseClass=" + responseClass + ", text="
+          + wrapper.getBody(), e);
       throw e;
     }
   }
