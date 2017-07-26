@@ -10,36 +10,36 @@ import org.apache.commons.lang3.StringUtils;
 import com.google.common.base.Preconditions;
 import com.xwechat.api.Apis;
 import com.xwechat.api.AuthorizedApi;
-import com.xwechat.api.mp.OpenIdListApi.OpenIdListResponse;
+import com.xwechat.api.mp.OpenidListApi.OpenidListResponse;
 import com.xwechat.core.IWechatResponse;
 import com.xwechat.util.CollectionUtil;
 
 /**
- * 公众号获取关注者用户列表（openId列表），每次最多10000个
+ * 公众号获取关注者用户列表（openid列表），每次最多10000个
  * 
  * @Note 公众平台
  * @url https://api.weixin.qq.com/cgi-bin/user/get?access_token=ACCESS_TOKEN&next_openid=NEXT_OPENID
  * @see https://mp.weixin.qq.com/wiki?t=resource/res_main&id=mp1421140840
  * @author yuanwq
  */
-public class OpenIdListApi extends AuthorizedApi<OpenIdListResponse> {
+public class OpenidListApi extends AuthorizedApi<OpenidListResponse> {
 
-  public OpenIdListApi() {
+  public OpenidListApi() {
     super(Apis.MP_OPENID_LIST);
   }
 
-  public OpenIdListApi setNextOpenId(String nextOpenId) {
-    Preconditions.checkArgument(StringUtils.isNotBlank(nextOpenId), "blank nextOpenId");
-    this.urlBuilder.setQueryParameter("next_openid", nextOpenId);
+  public OpenidListApi setNextOpenid(String nextOpenid) {
+    Preconditions.checkArgument(StringUtils.isNotBlank(nextOpenid), "blank nextOpenid");
+    this.urlBuilder.setQueryParameter("next_openid", nextOpenid);
     return this;
   }
 
   @Override
-  public Class<OpenIdListResponse> getResponseClass() {
-    return OpenIdListResponse.class;
+  public Class<OpenidListResponse> getResponseClass() {
+    return OpenidListResponse.class;
   }
 
-  public static class OpenIdListResponse implements IWechatResponse {
+  public static class OpenidListResponse implements IWechatResponse {
     public static class Data {
       List<String> openid;
 

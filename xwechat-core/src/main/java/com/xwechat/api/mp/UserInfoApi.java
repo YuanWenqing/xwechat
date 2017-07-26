@@ -26,9 +26,9 @@ public class UserInfoApi extends AuthorizedApi<UserInfoResponse> {
     this.urlBuilder.setQueryParameter("lang", "zh_CN");
   }
 
-  public UserInfoApi setOpenId(String openId) {
-    Preconditions.checkArgument(StringUtils.isNotBlank(openId), "blank openid");
-    this.urlBuilder.setQueryParameter("openid", openId);
+  public UserInfoApi setOpenid(String openid) {
+    Preconditions.checkArgument(StringUtils.isNotBlank(openid), "blank openid");
+    this.urlBuilder.setQueryParameter("openid", openid);
     return this;
   }
 

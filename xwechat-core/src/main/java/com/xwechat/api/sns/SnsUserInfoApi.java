@@ -25,9 +25,9 @@ public class SnsUserInfoApi extends AuthorizedApi<SnsUserInfo> {
     super(Apis.SNS_USERINFO);
   }
 
-  public SnsUserInfoApi setOpenId(String openId) {
-    Preconditions.checkArgument(StringUtils.isNotBlank(openId), "blank openId");
-    this.urlBuilder.setQueryParameter("openid", openId);
+  public SnsUserInfoApi setOpenid(String openid) {
+    Preconditions.checkArgument(StringUtils.isNotBlank(openid), "blank openid");
+    this.urlBuilder.setQueryParameter("openid", openid);
     return this;
   }
 

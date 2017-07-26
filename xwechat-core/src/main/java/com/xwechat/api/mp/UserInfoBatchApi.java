@@ -36,11 +36,11 @@ public class UserInfoBatchApi extends AuthorizedApi<UserInfoBatchResponse> {
     root.putArray("user_list");
   }
 
-  public UserInfoBatchApi addAllOpenId(Collection<String> openIds) {
-    Preconditions.checkArgument(openIds != null && !openIds.isEmpty(), "empty openIds");
+  public UserInfoBatchApi addAllOpenid(Collection<String> openids) {
+    Preconditions.checkArgument(openids != null && !openids.isEmpty(), "empty openids");
     ArrayNode userList = root.withArray("user_list");
-    for (String openId : openIds) {
-      userList.addObject().put("openid", openId).put("lang", "zh_CN");
+    for (String openid : openids) {
+      userList.addObject().put("openid", openid).put("lang", "zh_CN");
     }
     String content = writeJsonAsString(root);
     this.requestBuilder.post(RequestBody.create(MediaType.parse("text/json"), content));
