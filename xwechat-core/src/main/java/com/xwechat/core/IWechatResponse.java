@@ -4,11 +4,10 @@
 package com.xwechat.core;
 
 /**
+ * 微信接口返回结果的基础接口
+ * 
  * @author yuanwq
  */
 public interface IWechatResponse {
-  public void setBodyText(String bodyText);
-
-  public String getBodyText();
 
 }

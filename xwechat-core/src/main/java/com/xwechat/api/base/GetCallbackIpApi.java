@@ -6,10 +6,10 @@ package com.xwechat.api.base;
 import java.util.Collections;
 import java.util.List;
 
-import com.xwechat.api.AbstractWechatResponse;
 import com.xwechat.api.Apis;
 import com.xwechat.api.AuthorizedApi;
 import com.xwechat.api.base.GetCallbackIpApi.GetCallbackIpResponse;
+import com.xwechat.core.IWechatResponse;
 
 /**
  * 获取微信服务器IP地址
@@ -30,7 +30,7 @@ public class GetCallbackIpApi extends AuthorizedApi<GetCallbackIpResponse> {
     return GetCallbackIpResponse.class;
   }
 
-  public static class GetCallbackIpResponse extends AbstractWechatResponse {
+  public static class GetCallbackIpResponse implements IWechatResponse {
     private List<String> ipList;
 
     public List<String> getIpList() {

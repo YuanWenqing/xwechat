@@ -6,10 +6,10 @@ package com.xwechat.api.sns;
 import org.apache.commons.lang3.StringUtils;
 
 import com.google.common.base.Preconditions;
-import com.xwechat.api.AbstractWechatResponse;
 import com.xwechat.api.Apis;
 import com.xwechat.api.AuthorizedApi;
 import com.xwechat.api.sns.SnsUserInfoApi.SnsUserInfo;
+import com.xwechat.core.IWechatResponse;
 
 /**
  * 开放平台第三方登陆后sns获取用户个人信息（unionId）
@@ -36,7 +36,7 @@ public class SnsUserInfoApi extends AuthorizedApi<SnsUserInfo> {
     return SnsUserInfo.class;
   }
 
-  public static class SnsUserInfo extends AbstractWechatResponse {
+  public static class SnsUserInfo implements IWechatResponse {
     private String openid;
     private String nickname;
     private int sex;

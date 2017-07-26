@@ -3,10 +3,10 @@
  */
 package com.xwechat.api.jssdk;
 
-import com.xwechat.api.AbstractWechatResponse;
 import com.xwechat.api.Apis;
 import com.xwechat.api.AuthorizedApi;
 import com.xwechat.api.jssdk.JsapiTicketApi.JsapiTicketResponse;
+import com.xwechat.core.IWechatResponse;
 import com.xwechat.enums.TicketType;
 
 /**
@@ -29,7 +29,7 @@ public class JsapiTicketApi extends AuthorizedApi<JsapiTicketResponse> {
     return JsapiTicketResponse.class;
   }
 
-  public static class JsapiTicketResponse extends AbstractWechatResponse {
+  public static class JsapiTicketResponse implements IWechatResponse {
     private int errcode;
     private String errmsg;
     private String ticket;

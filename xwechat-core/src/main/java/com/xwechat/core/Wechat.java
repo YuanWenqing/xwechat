@@ -62,16 +62,19 @@ public class Wechat {
     return httpClient.newCall(request.toOkHttpRequest()).execute();
   }
 
-  public <R extends IWechatResponse> R call(IWechatApi<R> request) throws IOException {
+  public <R extends IWechatResponse> ResponseWrapper<R> call(IWechatApi<R> request)
+      throws IOException {
     Response rawResponse = rawCall(request);
-    return mapJsonResponse(rawResponse.body().string(), request.getResponseClass());
+    ResponseWrapper<R> wrapper = new ResponseWrapper<>(rawResponse.body().string());
+    R response = parseResponse(rawResponse.body().string(), request.getResponseClass());
+    wrapper.setResponse(response);
+    return wrapper;
   }
 
-  private <R extends IWechatResponse> R mapJsonResponse(String text, Class<R> responseClass)
+  private <R extends IWechatResponse> R parseResponse(String text, Class<R> responseClass)
       throws IOException {
     try {
       R response = objectMapper.readValue(text, responseClass);
-      response.setBodyText(text);
       return response;
     } catch (IOException e) {
       logger.warn("fail to map json response, responseClass=" + responseClass + ", text=" + text,

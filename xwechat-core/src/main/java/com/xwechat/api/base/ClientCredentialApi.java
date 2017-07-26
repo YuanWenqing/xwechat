@@ -6,10 +6,10 @@ package com.xwechat.api.base;
 import org.apache.commons.lang3.StringUtils;
 
 import com.google.common.base.Preconditions;
-import com.xwechat.api.AbstractWechatResponse;
 import com.xwechat.api.Apis;
 import com.xwechat.api.ApplicationApi;
 import com.xwechat.api.base.ClientCredentialApi.ClientCredentialResponse;
+import com.xwechat.core.IWechatResponse;
 import com.xwechat.enums.GrantType;
 
 /**
@@ -46,7 +46,7 @@ public class ClientCredentialApi extends ApplicationApi<ClientCredentialResponse
     return ClientCredentialResponse.class;
   }
 
-  public static class ClientCredentialResponse extends AbstractWechatResponse {
+  public static class ClientCredentialResponse implements IWechatResponse {
     private String accessToken;
     private int expiresIn;
 

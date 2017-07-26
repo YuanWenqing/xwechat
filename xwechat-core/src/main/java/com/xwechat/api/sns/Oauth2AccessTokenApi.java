@@ -6,10 +6,10 @@ package com.xwechat.api.sns;
 import org.apache.commons.lang3.StringUtils;
 
 import com.google.common.base.Preconditions;
-import com.xwechat.api.AbstractWechatResponse;
 import com.xwechat.api.Apis;
 import com.xwechat.api.ApplicationApi;
 import com.xwechat.api.sns.Oauth2AccessTokenApi.Oauth2AccessTokenResponse;
+import com.xwechat.core.IWechatResponse;
 import com.xwechat.enums.GrantType;
 
 /**
@@ -50,7 +50,7 @@ public class Oauth2AccessTokenApi extends ApplicationApi<Oauth2AccessTokenRespon
     return Oauth2AccessTokenResponse.class;
   }
 
-  public static class Oauth2AccessTokenResponse extends AbstractWechatResponse {
+  public static class Oauth2AccessTokenResponse implements IWechatResponse {
     private String accessToken;
     private int expiresIn;
     private String refreshToken;

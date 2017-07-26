@@ -9,10 +9,10 @@ import java.util.List;
 import org.apache.commons.lang3.StringUtils;
 
 import com.google.common.base.Preconditions;
-import com.xwechat.api.AbstractWechatResponse;
 import com.xwechat.api.Apis;
 import com.xwechat.api.AuthorizedApi;
 import com.xwechat.api.mp.MpUserInfoApi.MpUserInfoResponse;
+import com.xwechat.core.IWechatResponse;
 
 /**
  * 公众平台获取用户基本信息（UnionId），公众号和小程序使用
@@ -40,7 +40,7 @@ public class MpUserInfoApi extends AuthorizedApi<MpUserInfoResponse> {
     return MpUserInfoResponse.class;
   }
 
-  public static class MpUserInfoResponse extends AbstractWechatResponse {
+  public static class MpUserInfoResponse implements IWechatResponse {
     private String subscribe;
     private String openid;
     private String nickname;
