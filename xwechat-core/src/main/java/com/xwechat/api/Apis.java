@@ -15,6 +15,7 @@ public interface Apis {
   String GET_CALLBACK_IP = "https://api.weixin.qq.com/cgi-bin/getcallbackip";
   String MP_USERINFO = "https://api.weixin.qq.com/cgi-bin/user/info";
   String MP_USERINFO_BATCH = "https://api.weixin.qq.com/cgi-bin/user/info/batchget";
+  String MP_OPENID_LIST = "https://api.weixin.qq.com/cgi-bin/user/get";
 
   String JSAPI_TICKET = "https://api.weixin.qq.com/cgi-bin/ticket/getticket";
 }
