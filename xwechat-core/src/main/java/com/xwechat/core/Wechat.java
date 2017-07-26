@@ -83,7 +83,7 @@ public class Wechat {
         R response = objectMapper.reader(responseClass).readValue(root);
         wrapper.setResponse(response);
       }
-    } catch (IOException e) {
+    } catch (Exception e) {
       logger.warn("fail to parse json response, responseClass=" + responseClass + ", text="
           + wrapper.getBody(), e);
       throw e;

@@ -10,7 +10,7 @@ import com.xwechat.core.IWechatResponse;
  */
 public class SendMessageResponse implements IWechatResponse {
   private int errcode;
-  private int errmsg;
+  private String errmsg;
 
   private String type;
   private int msgId;
@@ -24,11 +24,11 @@ public class SendMessageResponse implements IWechatResponse {
     this.errcode = errcode;
   }
 
-  public int getErrmsg() {
+  public String getErrmsg() {
     return errmsg;
   }
 
-  public void setErrmsg(int errmsg) {
+  public void setErrmsg(String errmsg) {
     this.errmsg = errmsg;
   }
 
