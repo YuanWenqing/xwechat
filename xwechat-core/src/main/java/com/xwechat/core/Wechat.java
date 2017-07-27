@@ -71,6 +71,18 @@ public class Wechat {
     return wrapper;
   }
 
+  /**
+   * <b>Warning:</b> this method silently converts {@link IOException} to {@link RuntimeException}
+   * for some case where no handle IOException and just throw it upper
+   */
+  public <R extends IWechatResponse> ResponseWrapper<R> callUnchecked(IWechatApi<R> request) {
+    try {
+      return call(request);
+    } catch (IOException e) {
+      throw new RuntimeException("request=" + request, e);
+    }
+  }
+
   private <R extends IWechatResponse> void parseResponse(ResponseWrapper<R> wrapper,
       Class<R> responseClass) throws IOException {
     try {
