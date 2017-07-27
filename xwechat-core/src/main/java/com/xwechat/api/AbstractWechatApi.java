@@ -90,7 +90,11 @@ public abstract class AbstractWechatApi<R extends IWechatResponse> implements IW
         e.printStackTrace();
       }
     }
-    return "[<" + body.contentType().toString() + ">]";
+    long len = -1;
+    try {
+      len = body.contentLength();
+    } catch (IOException e) {}
+    return String.format("[<%s>:<%d>]", body.contentType(), len);
   }
 
 }
