@@ -16,7 +16,7 @@ public class SendAllMessageApi extends AuthorizedApi<SendMessageResponse> {
   private Message message;
 
   public SendAllMessageApi() {
-    super(Apis.MESSAGE_SENALL, Method.POST);
+    super(Apis.MESSAGE_SENDALL, Method.POST);
   }
 
   public SendAllMessageApi setMessage(Message msg) {

@@ -20,5 +20,5 @@ public interface Apis {
   String JSAPI_TICKET = "https://api.weixin.qq.com/cgi-bin/ticket/getticket";
 
   String MESSAGE_SEND = "https://api.weixin.qq.com/cgi-bin/message/mass/send";
-  String MESSAGE_SENALL = "https://api.weixin.qq.com/cgi-bin/message/mass/sendall";
+  String MESSAGE_SENDALL = "https://api.weixin.qq.com/cgi-bin/message/mass/sendall";
 }
