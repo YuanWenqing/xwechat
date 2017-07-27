@@ -38,7 +38,7 @@ public class Wechat {
   // private final ExecutorService executorService;
 
   private Wechat() {
-    this.httpClient = new OkHttpClient();
+    this.httpClient = new OkHttpClient.Builder().retryOnConnectionFailure(true).build();
     this.objectMapper = new ObjectMapper();
     // 变量的驼峰命名和json中的下划线命名映射
     this.objectMapper.setPropertyNamingStrategy(new LowerCaseWithUnderscoresStrategy());
