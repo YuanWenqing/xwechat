@@ -78,11 +78,12 @@ public class Wechat {
       if (root.has("errcode")) {
         wrapper.setErrcode(root.get("errcode").asInt());
         wrapper.setErrmsg(root.get("errmsg").asText());
-        return;
       }
-      R response = objectMapper.reader(responseClass).readValue(root);
-      wrapper.setResponse(response);
-    } catch (IOException e) {
+      if (!wrapper.isError()) {
+        R response = objectMapper.reader(responseClass).readValue(root);
+        wrapper.setResponse(response);
+      }
+    } catch (Exception e) {
       logger.warn("fail to parse json response, responseClass=" + responseClass + ", text="
           + wrapper.getBody(), e);
       throw e;

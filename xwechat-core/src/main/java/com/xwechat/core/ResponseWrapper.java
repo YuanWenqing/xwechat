@@ -3,9 +3,9 @@
  */
 package com.xwechat.core;
 
-import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.google.common.base.MoreObjects;
+import com.xwechat.util.JsonUtil;
 
 /**
  * 微信接口返回结果的包装：
@@ -62,22 +62,19 @@ public class ResponseWrapper<R extends IWechatResponse> {
     return response;
   }
 
+  public String getPrettyResponse() {
+    return JsonUtil.writeAsPrettyString(RESPONSE_OBJECT_MAPPER, response);
+  }
+
   @Override
   public String toString() {
     if (isError()) {
       return MoreObjects.toStringHelper(getClass()).add("errcode", errcode).add("errmsg", errmsg)
           .add("body", body).toString();
     }
-    String responseText = toString(response);
+    String responseText = JsonUtil.writeAsString(RESPONSE_OBJECT_MAPPER, response);
     return MoreObjects.toStringHelper(getClass()).add("response", responseText).add("body", body)
         .toString();
   }
 
-  public static String toString(IWechatResponse response) {
-    try {
-      return RESPONSE_OBJECT_MAPPER.writeValueAsString(response);
-    } catch (JsonProcessingException e) {
-      throw new RuntimeException("never here", e);
-    }
-  }
 }

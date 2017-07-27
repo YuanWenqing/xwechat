@@ -19,6 +19,10 @@ public abstract class ApplicationApi<R extends IWechatResponse> extends Abstract
     super(endpoint);
   }
 
+  public ApplicationApi(String endpoint, Method method) {
+    super(endpoint, method);
+  }
+
   public ApplicationApi<R> setAppId(String appId) {
     Preconditions.checkArgument(StringUtils.isNotBlank(appId), "blank appId");
     this.urlBuilder.setQueryParameter("appid", appId);
