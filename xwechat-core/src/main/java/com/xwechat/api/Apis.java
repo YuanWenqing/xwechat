@@ -21,4 +21,6 @@ public interface Apis {
 
   String MESSAGE_SEND = "https://api.weixin.qq.com/cgi-bin/message/mass/send";
   String MESSAGE_SENDALL = "https://api.weixin.qq.com/cgi-bin/message/mass/sendall";
+
+  String WXAPP_TEMPLATE_MSG_SEND = "https://api.weixin.qq.com/cgi-bin/message/wxopen/template/send";
 }
