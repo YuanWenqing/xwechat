@@ -5,6 +5,7 @@ import okhttp3.RequestBody;
 import com.xwechat.api.Apis;
 import com.xwechat.api.AuthorizedApi;
 import com.xwechat.api.Method;
+import com.xwechat.util.JsonUtil;
 
 /**
  * 小程序发送模板消息
@@ -19,12 +20,12 @@ public class SendTemplateMsgApi extends AuthorizedApi<WxappApiResp> {
   protected TemplateMsg msg;
 
   public SendTemplateMsgApi() {
-    super(Apis.MESSAGE_SEND, Method.POST);
+    super(Apis.WXAPP_TEMPLATE_MSG_SEND, Method.POST);
   }
 
   public SendTemplateMsgApi setMessage(TemplateMsg msg) {
     this.msg = msg;
-    setRequestBody(RequestBody.create(JSON_MEDIA_TYPE, msg.toJson()));
+    setRequestBody(RequestBody.create(JSON_MEDIA_TYPE, JsonUtil.writeAsString(JsonUtil.DEFAULT_OBJECT_MAPPER, msg)));
     return this;
   }
 
