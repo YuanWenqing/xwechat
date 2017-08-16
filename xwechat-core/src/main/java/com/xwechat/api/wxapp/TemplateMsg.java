@@ -48,8 +48,8 @@ public class TemplateMsg {
   }
 
   public static class Keyword {
-    String value;
-    String color;
+    private String value;
+    private String color;
 
     public String getValue() {
       return value;
@@ -72,6 +72,8 @@ public class TemplateMsg {
       this.color = color;
     }
   }
+
+
 
   public String getTouser() {
     return touser;
