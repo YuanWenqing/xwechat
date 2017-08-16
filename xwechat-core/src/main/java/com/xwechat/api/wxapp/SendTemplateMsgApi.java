@@ -20,7 +20,7 @@ public class SendTemplateMsgApi extends AuthorizedApi<WxappApiResp> {
   protected TemplateMsg msg;
 
   public SendTemplateMsgApi() {
-    super(Apis.MESSAGE_SEND, Method.POST);
+    super(Apis.WXAPP_TEMPLATE_MSG_SEND, Method.POST);
   }
 
   public SendTemplateMsgApi setMessage(TemplateMsg msg) {
