@@ -47,15 +47,6 @@ public class TemplateMsg {
     return this;
   }
 
-  public String toJson() {
-    return JsonUtil.writeAsString(JsonUtil.DEFAULT_OBJECT_MAPPER, this);
-  }
-
-  @Override
-  public String toString() {
-    return JsonUtil.writeAsString(JsonUtil.DEFAULT_OBJECT_MAPPER, this);
-  }
-
   public static class Keyword {
     String value;
     String color;
