@@ -3,6 +3,8 @@
  */
 package com.xwechat.schedule;
 
+import com.xwechat.util.JsonUtil;
+
 /**
  * @author yuanwq
  */
@@ -42,5 +44,10 @@ public class ExpirableValue {
 
   public void setExpireTime(long expireTime) {
     this.expireTime = expireTime;
+  }
+
+  @Override
+  public String toString() {
+    return JsonUtil.writeAsString(JsonUtil.DEFAULT_OBJECT_MAPPER, this);
   }
 }

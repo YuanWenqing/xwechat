@@ -27,4 +27,22 @@ public class MapRepository<V> implements Repository<V> {
   public void delete(String appId) {
     map.remove(appId);
   }
+
+  @Override
+  public String toString() {
+    return map.toString();
+  }
+
+  @Override
+  public int hashCode() {
+    return map.hashCode();
+  }
+
+  @Override
+  public boolean equals(Object obj) {
+    if (obj instanceof MapRepository) {
+      return this.map.equals(((MapRepository<?>) obj).map);
+    }
+    return false;
+  }
 }
