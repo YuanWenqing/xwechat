@@ -38,7 +38,7 @@ public class Wechat {
   // private final ExecutorService executorService;
 
   private Wechat() {
-    this.httpClient = new OkHttpClient();
+    this.httpClient = new OkHttpClient.Builder().retryOnConnectionFailure(true).build();
     this.objectMapper = new ObjectMapper();
     // 变量的驼峰命名和json中的下划线命名映射
     this.objectMapper.setPropertyNamingStrategy(new LowerCaseWithUnderscoresStrategy());
@@ -69,6 +69,18 @@ public class Wechat {
     ResponseWrapper<R> wrapper = new ResponseWrapper<>(rawResponse.body().string());
     parseResponse(wrapper, request.getResponseClass());
     return wrapper;
+  }
+
+  /**
+   * <b>Warning:</b> this method silently converts {@link IOException} to {@link RuntimeException}
+   * for some case where no handle IOException and just throw it upper
+   */
+  public <R extends IWechatResponse> ResponseWrapper<R> callUnchecked(IWechatApi<R> request) {
+    try {
+      return call(request);
+    } catch (IOException e) {
+      throw new RuntimeException("request=" + request, e);
+    }
   }
 
   private <R extends IWechatResponse> void parseResponse(ResponseWrapper<R> wrapper,
