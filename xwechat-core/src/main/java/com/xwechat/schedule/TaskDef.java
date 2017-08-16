@@ -54,7 +54,7 @@ public class TaskDef {
   }
 
   public void addTicketTypes(Collection<TicketType> ticketTypes) {
-    ticketTypes.addAll(ticketTypes);
+    this.ticketTypes.addAll(ticketTypes);
   }
 
   public Collection<TicketType> getTicketTypes() {

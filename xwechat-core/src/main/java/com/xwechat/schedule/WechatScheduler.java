@@ -43,6 +43,7 @@ public class WechatScheduler {
   private long durationMillis = TimeUnit.MINUTES.toMillis(100);
   private Repository<TaskDef> taskRepo = new MapRepository<>();
   private TaskLoop taskLoop;
+  private volatile boolean started = false;
 
   /* 默认使用内存方式，生产环境请自行实现并设置 */
   private Repository<ExpirableValue> accessTokenRepo = new MapRepository<>();
@@ -60,11 +61,26 @@ public class WechatScheduler {
     this.scheduledExecutor = scheduledExecutor;
   }
 
+  public void setDuration(long duration, TimeUnit unit) {
+    this.durationMillis = unit.toMillis(duration);
+  }
+
+  public void setGapMillis(long gap, TimeUnit unit) {
+    this.gapMillis = unit.toMillis(gap);
+  }
+
   public synchronized void start() {
-    long size = durationMillis / gapMillis;
+    Preconditions.checkState(!started, "already started");
+    Preconditions.checkArgument(durationMillis > gapMillis);
+    long size = durationMillis / gapMillis + 1; // +1是为了避免0和最大值落到同一个槽中
     taskLoop = new TaskLoop(size);
     scheduledExecutor.scheduleAtFixedRate(new LoopStepThread(), gapMillis, gapMillis,
         TimeUnit.MILLISECONDS);
+    started = true;
+  }
+
+  public TaskLoop getTaskLoop() {
+    return taskLoop;
   }
 
   public Repository<TaskDef> getTaskRepo() {
@@ -108,6 +124,7 @@ public class WechatScheduler {
   }
 
   private TaskDef scheduleTask(TaskDef task) {
+    Preconditions.checkState(started, "not start yet");
     boolean immediateExecute = false;
     final String appId = task.getAppId();
     TaskDef oldTask = null;
@@ -148,7 +165,8 @@ public class WechatScheduler {
   }
 
   private void scheduleNext(TaskDef task) {
-    long ahead = (task.getExpireTime() - System.currentTimeMillis()) / gapMillis;
+    long aheadMillis = Long.min(task.getExpireTime() - System.currentTimeMillis(), durationMillis);
+    long ahead = aheadMillis / gapMillis;
     taskLoop.add(ahead, task.getAppId());
   }
 

@@ -7,6 +7,7 @@ import java.util.Collection;
 import java.util.Map;
 import java.util.Set;
 
+import com.google.common.base.MoreObjects;
 import com.google.common.base.Preconditions;
 import com.google.common.collect.Maps;
 import com.google.common.collect.Sets;
@@ -54,5 +55,11 @@ public class TaskLoop {
       idxTaskMap.get(idx).add(appId);
       taskIdxMap.put(appId, idx);
     }
+  }
+
+  @Override
+  public String toString() {
+    return MoreObjects.toStringHelper(getClass()).add("size", size).add("curIdx", curIdx)
+        .add("idx2task", idxTaskMap).add("task2idx", taskIdxMap).toString();
   }
 }
