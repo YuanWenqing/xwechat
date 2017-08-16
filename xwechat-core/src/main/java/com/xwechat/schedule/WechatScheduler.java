@@ -60,15 +60,23 @@ public class WechatScheduler {
     this.scheduledExecutor = scheduledExecutor;
   }
 
-  public void start() {
+  public synchronized void start() {
     long size = durationMillis / gapMillis;
     taskLoop = new TaskLoop(size);
     scheduledExecutor.scheduleAtFixedRate(new LoopStepThread(), gapMillis, gapMillis,
         TimeUnit.MILLISECONDS);
   }
 
+  public Repository<TaskDef> getTaskRepo() {
+    return taskRepo;
+  }
+
   public void setTaskRepo(Repository<TaskDef> taskRepo) {
     this.taskRepo = taskRepo;
+  }
+
+  public Repository<ExpirableValue> getAccessTokenRepo() {
+    return accessTokenRepo;
   }
 
   /**
@@ -76,6 +84,10 @@ public class WechatScheduler {
    */
   public void setAccessTokenRepo(Repository<ExpirableValue> accessTokenRepo) {
     this.accessTokenRepo = accessTokenRepo;
+  }
+
+  public Repository<ExpirableValue> getJsTicketRepo() {
+    return jsTicketRepo;
   }
 
   /**
