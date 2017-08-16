@@ -6,7 +6,6 @@ import org.apache.commons.lang3.StringUtils;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.google.common.collect.Maps;
-import com.xwechat.util.JsonUtil;
 
 /**
  * Created by zqs on 2017/8/15. 模板消息
@@ -21,7 +20,7 @@ public class TemplateMsg {
   // 表单提交场景下，为 submit 事件带上的 formId；支付场景下，为本次支付的 prepay_id
   private String form_id;
   // 模板内容，不填则下发空模板
-  private Map<String, Keyword> data = Maps.newHashMapWithExpectedSize(5);
+  private Map<String, Keyword> data = Maps.newTreeMap();
   // 模板内容字体的颜色，不填默认黑色
   private String color;
   // 模板需要放大的关键词，不填则默认无放大
@@ -47,18 +46,25 @@ public class TemplateMsg {
     return this;
   }
 
-  public String toJson() {
-    return JsonUtil.writeAsString(JsonUtil.DEFAULT_OBJECT_MAPPER, this);
-  }
-
-  @Override
-  public String toString() {
-    return JsonUtil.writeAsString(JsonUtil.DEFAULT_OBJECT_MAPPER, this);
-  }
-
   public static class Keyword {
-    String value;
-    String color;
+    private String value;
+    private String color;
+
+    public String getValue() {
+      return value;
+    }
+
+    public void setValue(String value) {
+      this.value = value;
+    }
+
+    public String getColor() {
+      return color;
+    }
+
+    public void setColor(String color) {
+      this.color = color;
+    }
 
     public Keyword(String value, String color) {
       this.value = value;
