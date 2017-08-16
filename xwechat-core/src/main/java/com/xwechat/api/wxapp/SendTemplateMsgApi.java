@@ -7,7 +7,12 @@ import com.xwechat.api.AuthorizedApi;
 import com.xwechat.api.Method;
 
 /**
- * Created by zqs on 2017/8/15. 小程序发送模板消息
+ * 小程序发送模板消息
+ *
+ * @Note 小程序api
+ * @url https://api.weixin.qq.com/cgi-bin/message/wxopen/template/send?access_token=ACCESS_TOKEN
+ * @see https://mp.weixin.qq.com/debug/wxadoc/dev/api/notice.html#发送模板消息
+ * @author zqs
  */
 public class SendTemplateMsgApi extends AuthorizedApi<WxappApiResp> {
 
