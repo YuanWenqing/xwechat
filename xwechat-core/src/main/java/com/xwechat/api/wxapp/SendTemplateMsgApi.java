@@ -25,7 +25,7 @@ public class SendTemplateMsgApi extends AuthorizedApi<WxappApiResp> {
 
   public SendTemplateMsgApi setMessage(TemplateMsg msg) {
     this.msg = msg;
-    setRequestBody(RequestBody.create(JSON_MEDIA_TYPE, JsonUtil.writeAsPrettyString(JsonUtil.DEFAULT_OBJECT_MAPPER, msg)));
+    setRequestBody(RequestBody.create(JSON_MEDIA_TYPE, JsonUtil.writeAsString(JsonUtil.DEFAULT_OBJECT_MAPPER, msg)));
     return this;
   }
 
