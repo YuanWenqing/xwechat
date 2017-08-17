@@ -18,12 +18,15 @@ import com.xwechat.util.JsonUtil;
  * @author yuanwq
  */
 public class TaskDef {
-  private final String appId;
+  private String appId;
   private String appSecret;
-  private final long createTime;
+  private long createTime;
   private final Set<TicketType> ticketTypes = Sets.newLinkedHashSet();
   private long executeTime = 0L;
   private long expireTime = 0L;
+
+  /** for deserialization */
+  public TaskDef() {}
 
   public TaskDef(String appId, String appSecret) {
     Preconditions.checkArgument(StringUtils.isNotBlank(appId), "blank appId");
@@ -37,6 +40,10 @@ public class TaskDef {
     return appId;
   }
 
+  public void setAppId(String appId) {
+    this.appId = appId;
+  }
+
   public String getAppSecret() {
     return appSecret;
   }
@@ -47,6 +54,10 @@ public class TaskDef {
 
   public long getCreateTime() {
     return createTime;
+  }
+
+  public void setCreateTime(long createTime) {
+    this.createTime = createTime;
   }
 
   public void addTicketType(TicketType type) {
@@ -76,7 +87,7 @@ public class TaskDef {
   public long getExpireTime() {
     return expireTime;
   }
-  
+
   @Override
   public String toString() {
     return JsonUtil.writeAsString(JsonUtil.DEFAULT_OBJECT_MAPPER, this);
