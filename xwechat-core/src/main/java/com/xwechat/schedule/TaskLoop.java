@@ -59,7 +59,7 @@ public class TaskLoop {
       }
       idxTaskMap.get(idx).add(appId);
       taskIdxMap.put(appId, idx);
-      logger.info("curIdx={}, appId={}, scheduleIdx={}", curIdx, appId, idx);
+      logger.info("curIdx={}, appId={}, scheduleIdx={}, size={}", curIdx, appId, idx, size);
     }
   }
 
