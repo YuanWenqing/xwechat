@@ -9,12 +9,9 @@ import com.fasterxml.jackson.annotation.JsonInclude;
  */
 @JsonInclude(JsonInclude.Include.NON_NULL)
 public class QRCodeReq {
-//  // 最大32个可见字符，只支持数字，大小写英文以及部分特殊字符：!#$&'()*+,/:;=?@-._~，其它字符请自行编码为合法字符（因不支持%，中文无法使用 urlencode
-//  // 处理，请使用其他编码方式）
+  // // 最大32个可见字符，只支持数字，大小写英文以及部分特殊字符：!#$&'()*+,/:;=?@-._~，其它字符请自行编码为合法字符（因不支持%，中文无法使用 urlencode
+  // // 处理，请使用其他编码方式）
   protected String scene;
-  // 小程序界面path，最大长度 128 字节
-//  protected String path;
-
   protected String page;
   // 二维码的宽度
   protected int width;
@@ -23,23 +20,23 @@ public class QRCodeReq {
   // {"r":"0","g":"0","b":"0"} auth_color 为 false 时生效，使用 rgb 设置颜色 例如 {"r":"xxx","g":"xxx","b":"xxx"}
   protected Map<String, String> line_color;
 
-    public String getScene() {
-        return scene;
-    }
+  public String getScene() {
+    return scene;
+  }
 
-    public void setScene(String scene) {
-        this.scene = scene;
-    }
+  public void setScene(String scene) {
+    this.scene = scene;
+  }
 
-    public String getPage() {
-        return page;
-    }
+  public String getPage() {
+    return page;
+  }
 
-    public void setPage(String page) {
-        this.page = page;
-    }
+  public void setPage(String page) {
+    this.page = page;
+  }
 
-    public int getWidth() {
+  public int getWidth() {
     return width;
   }
 
