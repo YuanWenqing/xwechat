@@ -130,6 +130,7 @@ public class WechatScheduler {
 
   private TaskDef scheduleTask(TaskDef task) {
     Preconditions.checkState(started, "not start yet");
+    logger.info("schedule task: {}", task);
     boolean immediateExecute = false;
     final String appId = task.getAppId();
     TaskDef oldTask = null;
@@ -153,6 +154,9 @@ public class WechatScheduler {
     }
     try {
       taskRepo.update(appId, oldTask);
+      if (debug) {
+        logger.info("taskRepo: {}", taskRepo);
+      }
     } catch (IOException e) {
       throw new RuntimeException("fail to update task: " + oldTask, e);
     }
@@ -160,9 +164,6 @@ public class WechatScheduler {
       submit(oldTask);
     } else {
       scheduleNext(oldTask);
-    }
-    if (debug) {
-      logger.info("after schedule {}, taskRepo: {}", oldTask, taskRepo);
     }
     return oldTask;
   }
@@ -207,6 +208,7 @@ public class WechatScheduler {
 
     @Override
     public void run() {
+      logger.info("run {}", taskDef);
       try {
         long expireTime = doTask();
         taskDef.setExecuteTime(System.currentTimeMillis());
@@ -222,6 +224,9 @@ public class WechatScheduler {
       long expireTime;
       ExpirableValue accessToken = reqAccessToken();
       accessTokenRepo.update(taskDef.getAppId(), accessToken);
+      if (debug) {
+        logger.info("[done {}] accessTokenRepo={}", taskDef.getAppId(), accessTokenRepo);
+      }
       expireTime = accessToken.getExpireTime();
       if (taskDef.getTicketTypes().contains(TicketType.JSAPI)) {
         ExpirableValue jsTicket = reqJsTicket(accessToken.getValue());
@@ -233,7 +238,6 @@ public class WechatScheduler {
       }
       if (debug) {
         logger.info("[done {}] task={}", taskDef.getAppId(), taskDef);
-        logger.info("[done {}] accessTokenRepo={}", taskDef.getAppId(), accessTokenRepo);
       }
       return expireTime;
     }

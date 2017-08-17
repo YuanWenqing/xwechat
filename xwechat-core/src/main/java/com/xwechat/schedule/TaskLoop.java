@@ -7,6 +7,9 @@ import java.util.Collection;
 import java.util.Map;
 import java.util.Set;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import com.google.common.base.MoreObjects;
 import com.google.common.base.Preconditions;
 import com.google.common.collect.Maps;
@@ -16,6 +19,8 @@ import com.google.common.collect.Sets;
  * @author yuanwq
  */
 public class TaskLoop {
+  private static final Logger logger = LoggerFactory.getLogger(TaskLoop.class);
+
   private final long size;
   private long curIdx = 0;
   private final Map<Long, Set<String>> idxTaskMap = Maps.newLinkedHashMap();
@@ -54,6 +59,7 @@ public class TaskLoop {
       }
       idxTaskMap.get(idx).add(appId);
       taskIdxMap.put(appId, idx);
+      logger.info("curIdx={}, appId={}, scheduleIdx={}", curIdx, appId, idx);
     }
   }
 
