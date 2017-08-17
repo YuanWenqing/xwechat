@@ -6,8 +6,8 @@ package com.xwechat.core;
 /**
  * @author yuanwq
  */
-public abstract class Application {
-  private final String name;
+public class Application {
+  private String name;
   private final String appId;
   private final String appSecret;
 
@@ -19,6 +19,10 @@ public abstract class Application {
 
   public Application(String appId, String appSecret) {
     this("app-" + appId, appId, appSecret);
+  }
+
+  public void setName(String name) {
+    this.name = name;
   }
 
   public String getName() {
