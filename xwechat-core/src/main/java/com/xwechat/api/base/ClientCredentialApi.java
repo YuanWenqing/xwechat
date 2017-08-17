@@ -58,6 +58,7 @@ public class ClientCredentialApi extends ApplicationApi<ClientCredentialResponse
       this.accessToken = accessToken;
     }
 
+    /** seconds */
     public int getExpiresIn() {
       return expiresIn;
     }
