@@ -44,6 +44,7 @@ public class WechatScheduler {
   private Repository<TaskDef> taskRepo = new MapRepository<>();
   private TaskLoop taskLoop;
   private volatile boolean started = false;
+  private boolean debug = false;
 
   /* 默认使用内存方式，生产环境请自行实现并设置 */
   private Repository<ExpirableValue> accessTokenRepo = new MapRepository<>();
@@ -67,6 +68,10 @@ public class WechatScheduler {
 
   public void setGapMillis(long gap, TimeUnit unit) {
     this.gapMillis = unit.toMillis(gap);
+  }
+
+  public void setDebug(boolean debug) {
+    this.debug = debug;
   }
 
   public synchronized void start() {
@@ -156,6 +161,9 @@ public class WechatScheduler {
     } else {
       scheduleNext(oldTask);
     }
+    if (debug) {
+      logger.info("after schedule {}, taskRepo: {}", oldTask, taskRepo);
+    }
     return oldTask;
   }
 
@@ -168,6 +176,9 @@ public class WechatScheduler {
     long aheadMillis = Long.min(task.getExpireTime() - System.currentTimeMillis(), durationMillis);
     long ahead = aheadMillis / gapMillis;
     taskLoop.add(ahead, task.getAppId());
+    if (debug) {
+      logger.info("taskLoop: " + taskLoop);
+    }
   }
 
   private class LoopStepThread implements Runnable {
@@ -219,6 +230,10 @@ public class WechatScheduler {
       }
       if (taskDef.getTicketTypes().contains(TicketType.WX_CARD)) {
         // TODO: request card ticket and update
+      }
+      if (debug) {
+        logger.info("[done {}] task={}", taskDef.getAppId(), taskDef);
+        logger.info("[done {}] accessTokenRepo={}", taskDef.getAppId(), accessTokenRepo);
       }
       return expireTime;
     }
