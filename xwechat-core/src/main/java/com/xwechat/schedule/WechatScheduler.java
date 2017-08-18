@@ -37,43 +37,22 @@ public class WechatScheduler {
             }
           }).build();
 
-  private final ExecutorService taskExecutor;
-  private final ScheduledExecutorService scheduledExecutor;
-  private final Repository<Application> appRepo;
+  private Repository<Application> appRepo;
+  private Repository<TaskDef> taskRepo;
+  private Repository<ExpirableValue> accessTokenRepo;
+  private Repository<ExpirableValue> jsTicketRepo;
+
+  private ExecutorService taskExecutor;
+  private ScheduledExecutorService scheduledExecutor;
 
   private long gapMillis = TimeUnit.MINUTES.toMillis(1);
   private long durationMillis = TimeUnit.MINUTES.toMillis(100);
-  private Repository<TaskDef> taskRepo = new MapRepository<>();
   private TaskLoop taskLoop;
+
   private volatile boolean started = false;
   private boolean debug = false;
 
-  /* 默认使用内存方式，生产环境请自行实现并设置 */
-  private Repository<ExpirableValue> accessTokenRepo = new MapRepository<>();
-  private Repository<ExpirableValue> jsTicketRepo = new MapRepository<>();
-
-  public WechatScheduler(Repository<Application> appRepo) {
-    this(appRepo, Executors.newCachedThreadPool(wechatThreadFactory),
-        Executors.newScheduledThreadPool(5, wechatThreadFactory));
-  }
-
-  public WechatScheduler(Repository<Application> appRepo, ExecutorService taskExecutor,
-      ScheduledExecutorService scheduledExecutor) {
-    Preconditions.checkNotNull(appRepo);
-    Preconditions.checkNotNull(taskExecutor);
-    Preconditions.checkNotNull(scheduledExecutor);
-    this.appRepo = appRepo;
-    this.taskExecutor = taskExecutor;
-    this.scheduledExecutor = scheduledExecutor;
-  }
-
-  public void setDuration(long duration, TimeUnit unit) {
-    this.durationMillis = unit.toMillis(duration);
-  }
-
-  public void setGapMillis(long gap, TimeUnit unit) {
-    this.gapMillis = unit.toMillis(gap);
-  }
+  private WechatScheduler() {}
 
   public void setDebug(boolean debug) {
     this.debug = debug;
@@ -97,30 +76,12 @@ public class WechatScheduler {
     return taskRepo;
   }
 
-  public void setTaskRepo(Repository<TaskDef> taskRepo) {
-    this.taskRepo = taskRepo;
-  }
-
   public Repository<ExpirableValue> getAccessTokenRepo() {
     return accessTokenRepo;
   }
 
-  /**
-   * @param accessTokenRepo 至少需要实现更新接口
-   */
-  public void setAccessTokenRepo(Repository<ExpirableValue> accessTokenRepo) {
-    this.accessTokenRepo = accessTokenRepo;
-  }
-
   public Repository<ExpirableValue> getJsTicketRepo() {
     return jsTicketRepo;
-  }
-
-  /**
-   * @param jsTicketRepo 至少需要实现更新接口
-   */
-  public void setJsTicketRepo(Repository<ExpirableValue> jsTicketRepo) {
-    this.jsTicketRepo = jsTicketRepo;
   }
 
   public TaskDef scheduleAccessToken(String appId) {
@@ -181,6 +142,91 @@ public class WechatScheduler {
   private void submit(TaskDef taskDef) {
     if (taskDef == null) return;
     taskExecutor.submit(new ScheduleTask(taskDef));
+  }
+
+  public static Builder newBuilder() {
+    return new Builder();
+  }
+
+  public static class Builder {
+    private Repository<Application> appRepo;
+    private Repository<TaskDef> taskRepo;
+    private Repository<ExpirableValue> accessTokenRepo;
+    private Repository<ExpirableValue> jsTicketRepo;
+
+    private ExecutorService taskExecutor;
+    private ScheduledExecutorService scheduledExecutor;
+
+    private long gapMillis = TimeUnit.MINUTES.toMillis(1);
+    private long durationMillis = TimeUnit.MINUTES.toMillis(100);
+
+    private Builder() {}
+
+    public Repository<Application> getAppRepo() {
+      return appRepo;
+    }
+
+    public void setAppRepo(Repository<Application> appRepo) {
+      this.appRepo = appRepo;
+    }
+
+    public void setTaskRepo(Repository<TaskDef> taskRepo) {
+      this.taskRepo = taskRepo;
+    }
+
+    public void setAccessTokenRepo(Repository<ExpirableValue> accessTokenRepo) {
+      this.accessTokenRepo = accessTokenRepo;
+    }
+
+    public void setJsTicketRepo(Repository<ExpirableValue> jsTicketRepo) {
+      this.jsTicketRepo = jsTicketRepo;
+    }
+
+    public void setDuration(long duration, TimeUnit unit) {
+      this.durationMillis = unit.toMillis(duration);
+    }
+
+    public void setGap(long gap, TimeUnit unit) {
+      this.gapMillis = unit.toMillis(gap);
+    }
+
+    public ExecutorService getTaskExecutor() {
+      return taskExecutor;
+    }
+
+    public void setTaskExecutor(ExecutorService taskExecutor) {
+      this.taskExecutor = taskExecutor;
+    }
+
+    public ScheduledExecutorService getScheduledExecutor() {
+      return scheduledExecutor;
+    }
+
+    public void setScheduledExecutor(ScheduledExecutorService scheduledExecutor) {
+      this.scheduledExecutor = scheduledExecutor;
+    }
+
+    public WechatScheduler build() {
+      Preconditions.checkNotNull(appRepo);
+      WechatScheduler scheduler = new WechatScheduler();
+      /* 默认使用内存方式，生产环境请自行实现并设置 */
+      scheduler.appRepo = this.appRepo;
+      scheduler.taskRepo = this.taskRepo != null ? this.taskRepo : new MapRepository<>();
+      scheduler.accessTokenRepo =
+          this.accessTokenRepo != null ? this.accessTokenRepo : new MapRepository<>();
+      scheduler.jsTicketRepo =
+          this.jsTicketRepo != null ? this.jsTicketRepo : new MapRepository<>();
+
+      scheduler.taskExecutor = this.taskExecutor != null ? this.taskExecutor
+          : Executors.newCachedThreadPool(wechatThreadFactory);
+      scheduler.scheduledExecutor = this.scheduledExecutor != null ? this.scheduledExecutor
+          : Executors.newSingleThreadScheduledExecutor(wechatThreadFactory);
+
+      scheduler.durationMillis = this.durationMillis;
+      scheduler.gapMillis = this.gapMillis;
+
+      return scheduler;
+    }
   }
 
   private void scheduleNext(TaskDef task) {
