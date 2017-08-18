@@ -98,7 +98,7 @@ public class WechatScheduler {
     return scheduleTask(task);
   }
 
-  private TaskDef scheduleTask(TaskDef task) {
+  public TaskDef scheduleTask(TaskDef task) {
     Preconditions.checkState(started, "not start yet");
     logger.info("schedule task: {}", task);
     boolean immediateExecute = false;
@@ -112,13 +112,14 @@ public class WechatScheduler {
     if (oldTask == null) {
       immediateExecute = true;
       oldTask = task;
+      taskRepo.update(appId, oldTask);
     } else if (!oldTask.getTicketTypes().containsAll(task.getTicketTypes())) {
       immediateExecute = true;
       oldTask.addTicketTypes(task.getTicketTypes());
+      taskRepo.update(appId, oldTask);
     } else if (oldTask.getExpireTime() < System.currentTimeMillis()) {
       immediateExecute = true;
     }
-    taskRepo.update(appId, oldTask);
     if (debug) {
       logger.info("taskRepo: {}", taskRepo);
     }
