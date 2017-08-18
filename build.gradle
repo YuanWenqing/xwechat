@@ -43,5 +43,8 @@ project(':xwechat-core') {
         // json
         compile 'com.fasterxml.jackson.core:jackson-databind:2.4.+'
 
+        // test
+        testCompile 'junit:junit:4.12'
+
     }
 }

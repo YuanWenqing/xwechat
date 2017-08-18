@@ -3,6 +3,7 @@
  */
 package com.xwechat.schedule;
 
+import java.util.Collections;
 import java.util.Map;
 
 import com.google.common.collect.Maps;
@@ -26,6 +27,11 @@ public class MapRepository<V> implements Repository<V> {
   @Override
   public void delete(String appId) {
     map.remove(appId);
+  }
+
+  @Override
+  public Map<String, V> all() {
+    return Collections.unmodifiableMap(map);
   }
 
   @Override

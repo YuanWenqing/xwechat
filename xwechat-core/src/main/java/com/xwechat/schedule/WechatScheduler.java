@@ -6,9 +6,9 @@ package com.xwechat.schedule;
 import java.io.IOException;
 import java.lang.Thread.UncaughtExceptionHandler;
 import java.util.Collection;
+import java.util.NoSuchElementException;
 import java.util.concurrent.*;
 
-import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -18,6 +18,7 @@ import com.xwechat.api.base.ClientCredentialApi;
 import com.xwechat.api.base.ClientCredentialApi.ClientCredentialResponse;
 import com.xwechat.api.jssdk.JsapiTicketApi;
 import com.xwechat.api.jssdk.JsapiTicketApi.JsapiTicketResponse;
+import com.xwechat.core.Application;
 import com.xwechat.core.ResponseWrapper;
 import com.xwechat.core.Wechat;
 import com.xwechat.enums.TicketType;
@@ -36,39 +37,22 @@ public class WechatScheduler {
             }
           }).build();
 
-  private final ExecutorService taskExecutor;
-  private final ScheduledExecutorService scheduledExecutor;
+  private Repository<Application> appRepo;
+  private Repository<TaskDef> taskRepo;
+  private Repository<ExpirableValue> accessTokenRepo;
+  private Repository<ExpirableValue> jsTicketRepo;
+
+  private ExecutorService taskExecutor;
+  private ScheduledExecutorService scheduledExecutor;
 
   private long gapMillis = TimeUnit.MINUTES.toMillis(1);
   private long durationMillis = TimeUnit.MINUTES.toMillis(100);
-  private Repository<TaskDef> taskRepo = new MapRepository<>();
   private TaskLoop taskLoop;
+
   private volatile boolean started = false;
   private boolean debug = false;
 
-  /* 默认使用内存方式，生产环境请自行实现并设置 */
-  private Repository<ExpirableValue> accessTokenRepo = new MapRepository<>();
-  private Repository<ExpirableValue> jsTicketRepo = new MapRepository<>();
-
-  public WechatScheduler() {
-    this(Executors.newCachedThreadPool(wechatThreadFactory),
-        Executors.newScheduledThreadPool(5, wechatThreadFactory));
-  }
-
-  public WechatScheduler(ExecutorService taskExecutor, ScheduledExecutorService scheduledExecutor) {
-    Preconditions.checkNotNull(taskExecutor);
-    Preconditions.checkNotNull(scheduledExecutor);
-    this.taskExecutor = taskExecutor;
-    this.scheduledExecutor = scheduledExecutor;
-  }
-
-  public void setDuration(long duration, TimeUnit unit) {
-    this.durationMillis = unit.toMillis(duration);
-  }
-
-  public void setGapMillis(long gap, TimeUnit unit) {
-    this.gapMillis = unit.toMillis(gap);
-  }
+  private WechatScheduler() {}
 
   public void setDebug(boolean debug) {
     this.debug = debug;
@@ -84,81 +68,60 @@ public class WechatScheduler {
     started = true;
   }
 
-  public TaskLoop getTaskLoop() {
-    return taskLoop;
+  public Repository<Application> getAppRepo() {
+    return appRepo;
   }
 
   public Repository<TaskDef> getTaskRepo() {
     return taskRepo;
   }
 
-  public void setTaskRepo(Repository<TaskDef> taskRepo) {
-    this.taskRepo = taskRepo;
-  }
-
   public Repository<ExpirableValue> getAccessTokenRepo() {
     return accessTokenRepo;
-  }
-
-  /**
-   * @param accessTokenRepo 至少需要实现更新接口
-   */
-  public void setAccessTokenRepo(Repository<ExpirableValue> accessTokenRepo) {
-    this.accessTokenRepo = accessTokenRepo;
   }
 
   public Repository<ExpirableValue> getJsTicketRepo() {
     return jsTicketRepo;
   }
 
-  /**
-   * @param jsTicketRepo 至少需要实现更新接口
-   */
-  public void setJsTicketRepo(Repository<ExpirableValue> jsTicketRepo) {
-    this.jsTicketRepo = jsTicketRepo;
+  public TaskLoop getTaskLoop() {
+    return taskLoop;
   }
 
-  public TaskDef scheduleAccessToken(String appId, String appSecret) {
-    return scheduleTask(new TaskDef(appId, appSecret));
+  public TaskDef scheduleAccessToken(String appId) {
+    return scheduleTask(new TaskDef(appId));
   }
 
-  public TaskDef scheduleJsTicket(String appId, String appSecret) {
-    TaskDef task = new TaskDef(appId, appSecret);
+  public TaskDef scheduleJsTicket(String appId) {
+    TaskDef task = new TaskDef(appId);
     task.addTicketType(TicketType.JSAPI);
     return scheduleTask(task);
   }
 
-  private TaskDef scheduleTask(TaskDef task) {
+  public TaskDef scheduleTask(TaskDef task) {
     Preconditions.checkState(started, "not start yet");
     logger.info("schedule task: {}", task);
     boolean immediateExecute = false;
     final String appId = task.getAppId();
-    TaskDef oldTask = null;
-    try {
-      oldTask = taskRepo.get(appId);
-    } catch (IOException e) {
-      throw new RuntimeException("fail to get task: " + task.getAppId(), e);
+    Application app;
+    app = appRepo.get(appId);
+    if (app == null) {
+      throw new NoSuchElementException("no app found, appId=" + task.getAppId());
     }
+    TaskDef oldTask = taskRepo.get(appId);
     if (oldTask == null) {
       immediateExecute = true;
       oldTask = task;
-    } else if (!StringUtils.equals(task.getAppSecret(), oldTask.getAppSecret())) {
-      immediateExecute = true;
-      oldTask.setAppSecret(task.getAppSecret());
-      oldTask.addTicketTypes(task.getTicketTypes());
+      taskRepo.update(appId, oldTask);
     } else if (!oldTask.getTicketTypes().containsAll(task.getTicketTypes())) {
       immediateExecute = true;
       oldTask.addTicketTypes(task.getTicketTypes());
+      taskRepo.update(appId, oldTask);
     } else if (oldTask.getExpireTime() < System.currentTimeMillis()) {
       immediateExecute = true;
     }
-    try {
-      taskRepo.update(appId, oldTask);
-      if (debug) {
-        logger.info("taskRepo: {}", taskRepo);
-      }
-    } catch (IOException e) {
-      throw new RuntimeException("fail to update task: " + oldTask, e);
+    if (debug) {
+      logger.info("taskRepo: {}", taskRepo);
     }
     if (immediateExecute) {
       submit(oldTask);
@@ -173,12 +136,101 @@ public class WechatScheduler {
     taskExecutor.submit(new ScheduleTask(taskDef));
   }
 
+  private static final String DUMP_TEMPLATE =
+      "===== appRepo =====\n%s\n" + "===== taskRepo =====\n%s\n" + "===== taskLoop =====\n%s\n"
+          + "===== accessTokenRepo =====\n%s\n" + "===== jsTicketRepo =====\n%s\n";
+
+  public String dump() {
+    return String.format(DUMP_TEMPLATE, appRepo, taskRepo, taskLoop, accessTokenRepo, jsTicketRepo);
+  }
+
+  public static Builder newBuilder() {
+    return new Builder();
+  }
+
+  public static class Builder {
+    private Repository<Application> appRepo;
+    private Repository<TaskDef> taskRepo;
+    private Repository<ExpirableValue> accessTokenRepo;
+    private Repository<ExpirableValue> jsTicketRepo;
+
+    private ExecutorService taskExecutor;
+    private ScheduledExecutorService scheduledExecutor;
+
+    private long gapMillis = TimeUnit.MINUTES.toMillis(1);
+    private long durationMillis = TimeUnit.MINUTES.toMillis(100);
+
+    private Builder() {}
+
+    public Builder setAppRepo(Repository<Application> appRepo) {
+      this.appRepo = appRepo;
+      return this;
+    }
+
+    public Builder setTaskRepo(Repository<TaskDef> taskRepo) {
+      this.taskRepo = taskRepo;
+      return this;
+    }
+
+    public Builder setAccessTokenRepo(Repository<ExpirableValue> accessTokenRepo) {
+      this.accessTokenRepo = accessTokenRepo;
+      return this;
+    }
+
+    public Builder setJsTicketRepo(Repository<ExpirableValue> jsTicketRepo) {
+      this.jsTicketRepo = jsTicketRepo;
+      return this;
+    }
+
+    public Builder setDuration(long duration, TimeUnit unit) {
+      this.durationMillis = unit.toMillis(duration);
+      return this;
+    }
+
+    public Builder setGap(long gap, TimeUnit unit) {
+      this.gapMillis = unit.toMillis(gap);
+      return this;
+    }
+
+    public Builder setTaskExecutor(ExecutorService taskExecutor) {
+      this.taskExecutor = taskExecutor;
+      return this;
+    }
+
+    public Builder setScheduledExecutor(ScheduledExecutorService scheduledExecutor) {
+      this.scheduledExecutor = scheduledExecutor;
+      return this;
+    }
+
+    public WechatScheduler build() {
+      Preconditions.checkNotNull(appRepo);
+      WechatScheduler scheduler = new WechatScheduler();
+      /* 默认使用内存方式，生产环境请自行实现并设置 */
+      scheduler.appRepo = this.appRepo;
+      scheduler.taskRepo = this.taskRepo != null ? this.taskRepo : new MapRepository<>();
+      scheduler.accessTokenRepo =
+          this.accessTokenRepo != null ? this.accessTokenRepo : new MapRepository<>();
+      scheduler.jsTicketRepo =
+          this.jsTicketRepo != null ? this.jsTicketRepo : new MapRepository<>();
+
+      scheduler.taskExecutor = this.taskExecutor != null ? this.taskExecutor
+          : Executors.newCachedThreadPool(wechatThreadFactory);
+      scheduler.scheduledExecutor = this.scheduledExecutor != null ? this.scheduledExecutor
+          : Executors.newSingleThreadScheduledExecutor(wechatThreadFactory);
+
+      scheduler.durationMillis = this.durationMillis;
+      scheduler.gapMillis = this.gapMillis;
+
+      return scheduler;
+    }
+  }
+
   private void scheduleNext(TaskDef task) {
     long aheadMillis = Long.min(task.getExpireTime() - System.currentTimeMillis(), durationMillis);
     long ahead = aheadMillis / gapMillis;
     taskLoop.add(ahead, task.getAppId());
     if (debug) {
-      logger.info("taskLoop: " + taskLoop);
+      logger.info("[after scheduleNext] appId={}, taskLoop: {}", task.getAppId(), taskLoop);
     }
   }
 
@@ -187,12 +239,14 @@ public class WechatScheduler {
     public void run() {
       Collection<String> appIds = taskLoop.current();
       taskLoop.moveOn();
+      if (debug) {
+        logger.info("[moveOn] toRun: {}", appIds);
+      }
       for (String appId : appIds) {
-        TaskDef task;
         try {
-          task = taskRepo.get(appId);
+          TaskDef task = taskRepo.get(appId);
           submit(task);
-        } catch (IOException e) {
+        } catch (Exception e) {
           logger.error("fail to get task in loop step: " + appId, e);
         }
       }
@@ -224,9 +278,6 @@ public class WechatScheduler {
       long expireTime;
       ExpirableValue accessToken = reqAccessToken();
       accessTokenRepo.update(taskDef.getAppId(), accessToken);
-      if (debug) {
-        logger.info("[done {}] accessTokenRepo={}", taskDef.getAppId(), accessTokenRepo);
-      }
       expireTime = accessToken.getExpireTime();
       if (taskDef.getTicketTypes().contains(TicketType.JSAPI)) {
         ExpirableValue jsTicket = reqJsTicket(accessToken.getValue());
@@ -244,9 +295,10 @@ public class WechatScheduler {
 
     private ExpirableValue reqAccessToken() throws IOException {
       ClientCredentialApi api = new ClientCredentialApi();
-      api.setAppId(taskDef.getAppId()).setAppSecret(taskDef.getAppSecret());
+      Application app = appRepo.get(taskDef.getAppId());
+      api.setAppId(taskDef.getAppId()).setAppSecret(app.getAppSecret());
       ResponseWrapper<ClientCredentialResponse> wrapper = Wechat.get().call(api);
-      logger.info("accessToken, appId={}, resp={}", taskDef.getAppId(), wrapper.getBody());
+      logger.info("[reqAccessToken] appId={}, resp={}", taskDef.getAppId(), wrapper.getBody());
       ClientCredentialResponse response = wrapper.getResponse();
       long expireTime =
           System.currentTimeMillis() + TimeUnit.SECONDS.toMillis(response.getExpiresIn());
@@ -258,7 +310,7 @@ public class WechatScheduler {
       JsapiTicketApi api = new JsapiTicketApi();
       api.setAccessToken(accessToken);
       ResponseWrapper<JsapiTicketResponse> wrapper = Wechat.get().call(api);
-      logger.info("jsTicket, appId={}, resp={}", taskDef.getAppId(), wrapper.getBody());
+      logger.info("[reqJsTicket] appId={}, resp={}", taskDef.getAppId(), wrapper.getBody());
       JsapiTicketResponse response = wrapper.getResponse();
       long expireTime =
           System.currentTimeMillis() + TimeUnit.SECONDS.toMillis(response.getExpiresIn());
