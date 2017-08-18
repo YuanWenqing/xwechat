@@ -58,6 +58,7 @@ public class TestWechatSchedule extends BaseTest {
     assertEquals(1, scheduler.getAppRepo().all().size());
     assertEquals(1, scheduler.getTaskRepo().all().size());
     assertEquals(1, scheduler.getAccessTokenRepo().all().size());
+    assertEquals(1, scheduler.getJsTicketRepo().all().size());
     String accessToken2 = scheduler.getAccessTokenRepo().get(appId).getValue();
     taskDef = scheduler.getTaskRepo().get(appId);
     long executeTime2 = taskDef.getExecuteTime();
