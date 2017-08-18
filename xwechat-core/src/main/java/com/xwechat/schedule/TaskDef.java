@@ -19,7 +19,6 @@ import com.xwechat.util.JsonUtil;
  */
 public class TaskDef {
   private String appId;
-  private String appSecret;
   private long createTime;
   private final Set<TicketType> ticketTypes = Sets.newLinkedHashSet();
   private long executeTime = 0L;
@@ -28,11 +27,9 @@ public class TaskDef {
   /** for deserialization */
   public TaskDef() {}
 
-  public TaskDef(String appId, String appSecret) {
+  public TaskDef(String appId) {
     Preconditions.checkArgument(StringUtils.isNotBlank(appId), "blank appId");
-    Preconditions.checkArgument(StringUtils.isNotBlank(appSecret), "blank appSecret");
     this.appId = appId;
-    this.appSecret = appSecret;
     this.createTime = System.currentTimeMillis();
   }
 
@@ -42,14 +39,6 @@ public class TaskDef {
 
   public void setAppId(String appId) {
     this.appId = appId;
-  }
-
-  public String getAppSecret() {
-    return appSecret;
-  }
-
-  public void setAppSecret(String appSecret) {
-    this.appSecret = appSecret;
   }
 
   public long getCreateTime() {
