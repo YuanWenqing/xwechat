@@ -68,8 +68,8 @@ public class WechatScheduler {
     started = true;
   }
 
-  public TaskLoop getTaskLoop() {
-    return taskLoop;
+  public Repository<Application> getAppRepo() {
+    return appRepo;
   }
 
   public Repository<TaskDef> getTaskRepo() {
@@ -82,6 +82,10 @@ public class WechatScheduler {
 
   public Repository<ExpirableValue> getJsTicketRepo() {
     return jsTicketRepo;
+  }
+
+  public TaskLoop getTaskLoop() {
+    return taskLoop;
   }
 
   public TaskDef scheduleAccessToken(String appId) {
