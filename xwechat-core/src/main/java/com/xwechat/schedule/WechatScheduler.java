@@ -153,48 +153,44 @@ public class WechatScheduler {
 
     private Builder() {}
 
-    public Repository<Application> getAppRepo() {
-      return appRepo;
-    }
-
-    public void setAppRepo(Repository<Application> appRepo) {
+    public Builder setAppRepo(Repository<Application> appRepo) {
       this.appRepo = appRepo;
+      return this;
     }
 
-    public void setTaskRepo(Repository<TaskDef> taskRepo) {
+    public Builder setTaskRepo(Repository<TaskDef> taskRepo) {
       this.taskRepo = taskRepo;
+      return this;
     }
 
-    public void setAccessTokenRepo(Repository<ExpirableValue> accessTokenRepo) {
+    public Builder setAccessTokenRepo(Repository<ExpirableValue> accessTokenRepo) {
       this.accessTokenRepo = accessTokenRepo;
+      return this;
     }
 
-    public void setJsTicketRepo(Repository<ExpirableValue> jsTicketRepo) {
+    public Builder setJsTicketRepo(Repository<ExpirableValue> jsTicketRepo) {
       this.jsTicketRepo = jsTicketRepo;
+      return this;
     }
 
-    public void setDuration(long duration, TimeUnit unit) {
+    public Builder setDuration(long duration, TimeUnit unit) {
       this.durationMillis = unit.toMillis(duration);
+      return this;
     }
 
-    public void setGap(long gap, TimeUnit unit) {
+    public Builder setGap(long gap, TimeUnit unit) {
       this.gapMillis = unit.toMillis(gap);
+      return this;
     }
 
-    public ExecutorService getTaskExecutor() {
-      return taskExecutor;
-    }
-
-    public void setTaskExecutor(ExecutorService taskExecutor) {
+    public Builder setTaskExecutor(ExecutorService taskExecutor) {
       this.taskExecutor = taskExecutor;
+      return this;
     }
 
-    public ScheduledExecutorService getScheduledExecutor() {
-      return scheduledExecutor;
-    }
-
-    public void setScheduledExecutor(ScheduledExecutorService scheduledExecutor) {
+    public Builder setScheduledExecutor(ScheduledExecutorService scheduledExecutor) {
       this.scheduledExecutor = scheduledExecutor;
+      return this;
     }
 
     public WechatScheduler build() {
