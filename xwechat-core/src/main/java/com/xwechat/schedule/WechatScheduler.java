@@ -104,20 +104,11 @@ public class WechatScheduler {
     boolean immediateExecute = false;
     final String appId = task.getAppId();
     Application app;
-    try {
-      app = appRepo.get(appId);
-    } catch (IOException e) {
-      throw new RuntimeException("fail to get app: " + task.getAppId(), e);
-    }
+    app = appRepo.get(appId);
     if (app == null) {
       throw new NoSuchElementException("no app found, appId=" + task.getAppId());
     }
-    TaskDef oldTask = null;
-    try {
-      oldTask = taskRepo.get(appId);
-    } catch (IOException e) {
-      throw new RuntimeException("fail to get task: " + task.getAppId(), e);
-    }
+    TaskDef oldTask = taskRepo.get(appId);
     if (oldTask == null) {
       immediateExecute = true;
       oldTask = task;
@@ -127,13 +118,9 @@ public class WechatScheduler {
     } else if (oldTask.getExpireTime() < System.currentTimeMillis()) {
       immediateExecute = true;
     }
-    try {
-      taskRepo.update(appId, oldTask);
-      if (debug) {
-        logger.info("taskRepo: {}", taskRepo);
-      }
-    } catch (IOException e) {
-      throw new RuntimeException("fail to update task: " + oldTask, e);
+    taskRepo.update(appId, oldTask);
+    if (debug) {
+      logger.info("taskRepo: {}", taskRepo);
     }
     if (immediateExecute) {
       submit(oldTask);
@@ -248,11 +235,10 @@ public class WechatScheduler {
       Collection<String> appIds = taskLoop.current();
       taskLoop.moveOn();
       for (String appId : appIds) {
-        TaskDef task;
         try {
-          task = taskRepo.get(appId);
+          TaskDef task = taskRepo.get(appId);
           submit(task);
-        } catch (IOException e) {
+        } catch (Exception e) {
           logger.error("fail to get task in loop step: " + appId, e);
         }
       }
