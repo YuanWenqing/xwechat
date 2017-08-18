@@ -6,9 +6,9 @@ package com.xwechat.schedule;
 import java.io.IOException;
 import java.lang.Thread.UncaughtExceptionHandler;
 import java.util.Collection;
+import java.util.NoSuchElementException;
 import java.util.concurrent.*;
 
-import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -18,6 +18,7 @@ import com.xwechat.api.base.ClientCredentialApi;
 import com.xwechat.api.base.ClientCredentialApi.ClientCredentialResponse;
 import com.xwechat.api.jssdk.JsapiTicketApi;
 import com.xwechat.api.jssdk.JsapiTicketApi.JsapiTicketResponse;
+import com.xwechat.core.Application;
 import com.xwechat.core.ResponseWrapper;
 import com.xwechat.core.Wechat;
 import com.xwechat.enums.TicketType;
@@ -38,6 +39,7 @@ public class WechatScheduler {
 
   private final ExecutorService taskExecutor;
   private final ScheduledExecutorService scheduledExecutor;
+  private final Repository<Application> appRepo;
 
   private long gapMillis = TimeUnit.MINUTES.toMillis(1);
   private long durationMillis = TimeUnit.MINUTES.toMillis(100);
@@ -50,14 +52,17 @@ public class WechatScheduler {
   private Repository<ExpirableValue> accessTokenRepo = new MapRepository<>();
   private Repository<ExpirableValue> jsTicketRepo = new MapRepository<>();
 
-  public WechatScheduler() {
-    this(Executors.newCachedThreadPool(wechatThreadFactory),
+  public WechatScheduler(Repository<Application> appRepo) {
+    this(appRepo, Executors.newCachedThreadPool(wechatThreadFactory),
         Executors.newScheduledThreadPool(5, wechatThreadFactory));
   }
 
-  public WechatScheduler(ExecutorService taskExecutor, ScheduledExecutorService scheduledExecutor) {
+  public WechatScheduler(Repository<Application> appRepo, ExecutorService taskExecutor,
+      ScheduledExecutorService scheduledExecutor) {
+    Preconditions.checkNotNull(appRepo);
     Preconditions.checkNotNull(taskExecutor);
     Preconditions.checkNotNull(scheduledExecutor);
+    this.appRepo = appRepo;
     this.taskExecutor = taskExecutor;
     this.scheduledExecutor = scheduledExecutor;
   }
@@ -118,12 +123,12 @@ public class WechatScheduler {
     this.jsTicketRepo = jsTicketRepo;
   }
 
-  public TaskDef scheduleAccessToken(String appId, String appSecret) {
-    return scheduleTask(new TaskDef(appId, appSecret));
+  public TaskDef scheduleAccessToken(String appId) {
+    return scheduleTask(new TaskDef(appId));
   }
 
-  public TaskDef scheduleJsTicket(String appId, String appSecret) {
-    TaskDef task = new TaskDef(appId, appSecret);
+  public TaskDef scheduleJsTicket(String appId) {
+    TaskDef task = new TaskDef(appId);
     task.addTicketType(TicketType.JSAPI);
     return scheduleTask(task);
   }
@@ -133,6 +138,15 @@ public class WechatScheduler {
     logger.info("schedule task: {}", task);
     boolean immediateExecute = false;
     final String appId = task.getAppId();
+    Application app;
+    try {
+      app = appRepo.get(appId);
+    } catch (IOException e) {
+      throw new RuntimeException("fail to get app: " + task.getAppId(), e);
+    }
+    if (app == null) {
+      throw new NoSuchElementException("no app found, appId=" + task.getAppId());
+    }
     TaskDef oldTask = null;
     try {
       oldTask = taskRepo.get(appId);
@@ -142,10 +156,6 @@ public class WechatScheduler {
     if (oldTask == null) {
       immediateExecute = true;
       oldTask = task;
-    } else if (!StringUtils.equals(task.getAppSecret(), oldTask.getAppSecret())) {
-      immediateExecute = true;
-      oldTask.setAppSecret(task.getAppSecret());
-      oldTask.addTicketTypes(task.getTicketTypes());
     } else if (!oldTask.getTicketTypes().containsAll(task.getTicketTypes())) {
       immediateExecute = true;
       oldTask.addTicketTypes(task.getTicketTypes());
@@ -244,7 +254,8 @@ public class WechatScheduler {
 
     private ExpirableValue reqAccessToken() throws IOException {
       ClientCredentialApi api = new ClientCredentialApi();
-      api.setAppId(taskDef.getAppId()).setAppSecret(taskDef.getAppSecret());
+      Application app = appRepo.get(taskDef.getAppId());
+      api.setAppId(taskDef.getAppId()).setAppSecret(app.getAppSecret());
       ResponseWrapper<ClientCredentialResponse> wrapper = Wechat.get().call(api);
       logger.info("accessToken, appId={}, resp={}", taskDef.getAppId(), wrapper.getBody());
       ClientCredentialResponse response = wrapper.getResponse();
