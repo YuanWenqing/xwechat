@@ -135,6 +135,14 @@ public class WechatScheduler {
     taskExecutor.submit(new ScheduleTask(taskDef));
   }
 
+  private static final String DUMP_TEMPLATE =
+      "===== appRepo =====\n%s\n" + "===== taskRepo =====\n%s\n" + "===== taskLoop =====\n%s\n"
+          + "===== accessTokenRepo =====\n%s\n" + "===== jsTicketRepo =====\n%s\n";
+
+  public String dump() {
+    return String.format(DUMP_TEMPLATE, appRepo, taskRepo, taskLoop, accessTokenRepo, jsTicketRepo);
+  }
+
   public static Builder newBuilder() {
     return new Builder();
   }
@@ -221,7 +229,7 @@ public class WechatScheduler {
     long ahead = aheadMillis / gapMillis;
     taskLoop.add(ahead, task.getAppId());
     if (debug) {
-      logger.info("taskLoop: " + taskLoop);
+      logger.info("[after scheduleNext] appId={}, taskLoop: {}", task.getAppId(), taskLoop);
     }
   }
 
@@ -230,6 +238,9 @@ public class WechatScheduler {
     public void run() {
       Collection<String> appIds = taskLoop.current();
       taskLoop.moveOn();
+      if (debug) {
+        logger.info("[moveOn] toRun: {}", appIds);
+      }
       for (String appId : appIds) {
         try {
           TaskDef task = taskRepo.get(appId);
@@ -266,9 +277,6 @@ public class WechatScheduler {
       long expireTime;
       ExpirableValue accessToken = reqAccessToken();
       accessTokenRepo.update(taskDef.getAppId(), accessToken);
-      if (debug) {
-        logger.info("[done {}] accessTokenRepo={}", taskDef.getAppId(), accessTokenRepo);
-      }
       expireTime = accessToken.getExpireTime();
       if (taskDef.getTicketTypes().contains(TicketType.JSAPI)) {
         ExpirableValue jsTicket = reqJsTicket(accessToken.getValue());
@@ -289,7 +297,7 @@ public class WechatScheduler {
       Application app = appRepo.get(taskDef.getAppId());
       api.setAppId(taskDef.getAppId()).setAppSecret(app.getAppSecret());
       ResponseWrapper<ClientCredentialResponse> wrapper = Wechat.get().call(api);
-      logger.info("accessToken, appId={}, resp={}", taskDef.getAppId(), wrapper.getBody());
+      logger.info("[reqAccessToken] appId={}, resp={}", taskDef.getAppId(), wrapper.getBody());
       ClientCredentialResponse response = wrapper.getResponse();
       long expireTime =
           System.currentTimeMillis() + TimeUnit.SECONDS.toMillis(response.getExpiresIn());
@@ -301,7 +309,7 @@ public class WechatScheduler {
       JsapiTicketApi api = new JsapiTicketApi();
       api.setAccessToken(accessToken);
       ResponseWrapper<JsapiTicketResponse> wrapper = Wechat.get().call(api);
-      logger.info("jsTicket, appId={}, resp={}", taskDef.getAppId(), wrapper.getBody());
+      logger.info("[reqJsTicket] appId={}, resp={}", taskDef.getAppId(), wrapper.getBody());
       JsapiTicketResponse response = wrapper.getResponse();
       long expireTime =
           System.currentTimeMillis() + TimeUnit.SECONDS.toMillis(response.getExpiresIn());
