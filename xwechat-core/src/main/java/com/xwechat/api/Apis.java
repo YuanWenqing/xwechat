@@ -23,6 +23,8 @@ public interface Apis {
   String MESSAGE_SENDALL = "https://api.weixin.qq.com/cgi-bin/message/mass/sendall";
 
   String WXAPP_TEMPLATE_MSG_SEND = "https://api.weixin.qq.com/cgi-bin/message/wxopen/template/send";
-
   String WXAPP_QR_CODE_SEND = "https://api.weixin.qq.com/wxa/getwxacodeunlimit";
+  String WXAPP_TEMPLATE_LIST = "https://api.weixin.qq.com/cgi-bin/wxopen/template/list";
+  String WXAPP_TEMPLATE_ADD = "https://api.weixin.qq.com/cgi-bin/wxopen/template/add";
+  String WXAPP_TEMPLATE_LIB_GET = "https://api.weixin.qq.com/cgi-bin/wxopen/template/library/get";
 }
