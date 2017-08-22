@@ -214,7 +214,7 @@ public class WechatScheduler {
           this.jsTicketRepo != null ? this.jsTicketRepo : new MapRepository<>();
 
       scheduler.taskExecutor = this.taskExecutor != null ? this.taskExecutor
-          : Executors.newCachedThreadPool(wechatThreadFactory);
+          : Executors.newFixedThreadPool(5, wechatThreadFactory);
       scheduler.scheduledExecutor = this.scheduledExecutor != null ? this.scheduledExecutor
           : Executors.newSingleThreadScheduledExecutor(wechatThreadFactory);
 
