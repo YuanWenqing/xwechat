@@ -239,9 +239,7 @@ public class WechatScheduler {
     public void run() {
       Collection<String> appIds = taskLoop.current();
       taskLoop.moveOn();
-      if (debug) {
-        logger.info("[moveOn] toRun: {}", appIds);
-      }
+      logger.info("[moveOn] toRun: {}", appIds);
       for (String appId : appIds) {
         try {
           TaskDef task = taskRepo.get(appId);
@@ -265,6 +263,9 @@ public class WechatScheduler {
       logger.info("run {}", taskDef);
       try {
         long expireTime = doTask();
+        if (debug) {
+          logger.info("[done {}] task={}", taskDef.getAppId(), taskDef);
+        }
         taskDef.setExecuteTime(System.currentTimeMillis());
         taskDef.setExpireTime(expireTime);
         scheduleNext(taskDef);
@@ -286,9 +287,6 @@ public class WechatScheduler {
       }
       if (taskDef.getTicketTypes().contains(TicketType.WX_CARD)) {
         // TODO: request card ticket and update
-      }
-      if (debug) {
-        logger.info("[done {}] task={}", taskDef.getAppId(), taskDef);
       }
       return expireTime;
     }
