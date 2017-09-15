@@ -213,10 +213,10 @@ public class WechatScheduler {
       scheduler.jsTicketRepo =
           this.jsTicketRepo != null ? this.jsTicketRepo : new MapRepository<>();
 
-      scheduler.taskExecutor = this.taskExecutor != null ? this.taskExecutor
-          : Executors.newFixedThreadPool(5, wechatThreadFactory);
       scheduler.scheduledExecutor = this.scheduledExecutor != null ? this.scheduledExecutor
-          : Executors.newSingleThreadScheduledExecutor(wechatThreadFactory);
+          : Executors.newScheduledThreadPool(10, wechatThreadFactory);
+      scheduler.taskExecutor =
+          this.taskExecutor != null ? this.taskExecutor : this.scheduledExecutor;
 
       scheduler.durationMillis = this.durationMillis;
       scheduler.gapMillis = this.gapMillis;
@@ -237,8 +237,7 @@ public class WechatScheduler {
   private class LoopStepThread implements Runnable {
     @Override
     public void run() {
-      Collection<String> appIds = taskLoop.current();
-      taskLoop.moveOn();
+      Collection<String> appIds = taskLoop.moveOn();
       logger.info("[moveOn] toRun: {}", appIds);
       for (String appId : appIds) {
         try {
