@@ -216,7 +216,7 @@ public class WechatScheduler {
       scheduler.scheduledExecutor = this.scheduledExecutor != null ? this.scheduledExecutor
           : Executors.newScheduledThreadPool(10, wechatThreadFactory);
       scheduler.taskExecutor =
-          this.taskExecutor != null ? this.taskExecutor : this.scheduledExecutor;
+          this.taskExecutor != null ? this.taskExecutor : scheduler.scheduledExecutor;
 
       scheduler.durationMillis = this.durationMillis;
       scheduler.gapMillis = this.gapMillis;
@@ -238,7 +238,10 @@ public class WechatScheduler {
     @Override
     public void run() {
       Collection<String> appIds = taskLoop.moveOn();
-      logger.info("[moveOn] toRun: {}", appIds);
+      if (appIds.isEmpty()) {
+        return;
+      }
+      logger.info("[moveOn] toRun: {}, loop: {}", appIds, taskLoop);
       for (String appId : appIds) {
         try {
           TaskDef task = taskRepo.get(appId);
