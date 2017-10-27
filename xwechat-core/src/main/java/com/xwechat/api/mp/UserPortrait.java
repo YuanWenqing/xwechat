@@ -7,32 +7,32 @@ import java.util.List;
  * Created by shangqingzhe on 17/10/19.
  */
 public class UserPortrait {
-  private String ref_date;
-  private VisitUvNew visit_uv_new;
-  private VisitUv visit_uv;
+  private String refDate;
+  private VisitUvNew visitUvNew;
+  private VisitUv visitUv;
 
-  public String getRef_date() {
-    return ref_date;
+  public String getRefDate() {
+    return refDate;
   }
 
-  public void setRef_date(String ref_date) {
-    this.ref_date = ref_date;
+  public void setRefDate(String refDate) {
+    this.refDate = refDate;
   }
 
-  public VisitUvNew getVisit_uv_new() {
-    return visit_uv_new;
+  public VisitUvNew getVisitUvNew() {
+    return visitUvNew;
   }
 
-  public void setVisit_uv_new(VisitUvNew visit_uv_new) {
-    this.visit_uv_new = visit_uv_new;
+  public void setVisitUvNew(VisitUvNew visitUvNew) {
+    this.visitUvNew = visitUvNew;
   }
 
-  public VisitUv getVisit_uv() {
-    return visit_uv;
+  public VisitUv getVisitUv() {
+    return visitUv;
   }
 
-  public void setVisit_uv(VisitUv visit_uv) {
-    this.visit_uv = visit_uv;
+  public void setVisitUv(VisitUv visitUv) {
+    this.visitUv = visitUv;
   }
 
   public static class VisitUvNew {
