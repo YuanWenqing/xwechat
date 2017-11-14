@@ -241,7 +241,7 @@ public class WechatScheduler {
       if (appIds.isEmpty()) {
         return;
       }
-      logger.info("[moveOn] toRun: {}, loop: {}", appIds, taskLoop);
+      logger.info("[moveOn] toRun: {}", appIds);
       for (String appId : appIds) {
         try {
           TaskDef task = taskRepo.get(appId);
