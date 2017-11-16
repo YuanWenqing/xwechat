@@ -28,4 +28,5 @@ public interface Apis {
   String WXAPP_TEMPLATE_LIST = "https://api.weixin.qq.com/cgi-bin/wxopen/template/list";
   String WXAPP_TEMPLATE_ADD = "https://api.weixin.qq.com/cgi-bin/wxopen/template/add";
   String WXAPP_TEMPLATE_LIB_GET = "https://api.weixin.qq.com/cgi-bin/wxopen/template/library/get";
+  String WXAPP_TEMPLATE_DEL = "https://api.weixin.qq.com/cgi-bin/wxopen/template/del";
 }
