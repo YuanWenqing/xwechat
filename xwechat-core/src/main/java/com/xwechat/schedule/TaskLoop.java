@@ -30,19 +30,19 @@ public class TaskLoop {
     Preconditions.checkArgument(size > 1);
     this.size = size;
     for (long i = 0; i < size; i++) {
-      idxTaskMap.put(i, Sets.newLinkedHashSet());
+      idxTaskMap.put(i, Sets.newConcurrentHashSet());
     }
   }
 
-  public void moveOn() {
-    curIdx = (curIdx + 1) % size;
-  }
-
   /**
-   * @return 当前游标对应的appId列表
+   * 清空当前游标对应的appId列表，并游标前进一步
+   * 
+   * @return 当前游标（未前进）对应的appId列表
    */
-  public Collection<String> current() {
-    return idxTaskMap.replace(curIdx, Sets.newLinkedHashSet());
+  public synchronized Collection<String> moveOn() {
+    Collection<String> appIds = idxTaskMap.replace(curIdx, Sets.newConcurrentHashSet());
+    curIdx = (curIdx + 1) % size;
+    return appIds;
   }
 
   /**
@@ -59,7 +59,8 @@ public class TaskLoop {
       }
       idxTaskMap.get(idx).add(appId);
       taskIdxMap.put(appId, idx);
-      logger.info("[addTask] curIdx={}, appId={}, scheduleIdx={}, size={}", curIdx, appId, idx, size);
+      logger.info("[addTask] curIdx={}, appId={}, scheduleIdx={}, size={}", curIdx, appId, idx,
+          size);
     }
   }
 

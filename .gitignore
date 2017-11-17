@@ -5,3 +5,5 @@
 build
 tmp
 install
+.idea
+xwechat.iml

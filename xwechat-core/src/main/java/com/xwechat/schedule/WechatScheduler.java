@@ -213,10 +213,10 @@ public class WechatScheduler {
       scheduler.jsTicketRepo =
           this.jsTicketRepo != null ? this.jsTicketRepo : new MapRepository<>();
 
-      scheduler.taskExecutor = this.taskExecutor != null ? this.taskExecutor
-          : Executors.newFixedThreadPool(5, wechatThreadFactory);
       scheduler.scheduledExecutor = this.scheduledExecutor != null ? this.scheduledExecutor
-          : Executors.newSingleThreadScheduledExecutor(wechatThreadFactory);
+          : Executors.newScheduledThreadPool(10, wechatThreadFactory);
+      scheduler.taskExecutor =
+          this.taskExecutor != null ? this.taskExecutor : scheduler.scheduledExecutor;
 
       scheduler.durationMillis = this.durationMillis;
       scheduler.gapMillis = this.gapMillis;
@@ -237,11 +237,11 @@ public class WechatScheduler {
   private class LoopStepThread implements Runnable {
     @Override
     public void run() {
-      Collection<String> appIds = taskLoop.current();
-      taskLoop.moveOn();
-      if (debug) {
-        logger.info("[moveOn] toRun: {}", appIds);
+      Collection<String> appIds = taskLoop.moveOn();
+      if (appIds.isEmpty()) {
+        return;
       }
+      logger.info("[moveOn] toRun: {}", appIds);
       for (String appId : appIds) {
         try {
           TaskDef task = taskRepo.get(appId);
@@ -265,6 +265,9 @@ public class WechatScheduler {
       logger.info("run {}", taskDef);
       try {
         long expireTime = doTask();
+        if (debug) {
+          logger.info("[done {}] task={}", taskDef.getAppId(), taskDef);
+        }
         taskDef.setExecuteTime(System.currentTimeMillis());
         taskDef.setExpireTime(expireTime);
         scheduleNext(taskDef);
@@ -286,9 +289,6 @@ public class WechatScheduler {
       }
       if (taskDef.getTicketTypes().contains(TicketType.WX_CARD)) {
         // TODO: request card ticket and update
-      }
-      if (debug) {
-        logger.info("[done {}] task={}", taskDef.getAppId(), taskDef);
       }
       return expireTime;
     }
