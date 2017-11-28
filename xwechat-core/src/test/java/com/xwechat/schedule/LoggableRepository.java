@@ -3,46 +3,44 @@
  */
 package com.xwechat.schedule;
 
-import java.util.Map;
-
+import com.xwechat.core.Application;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import java.util.Map;
+
 /**
  * 每个操作都log，用于测试
- * 
+ *
  * @author yuanwq
  */
-public class LoggableRepository<V> extends MapRepository<V> implements Repository<V> {
+public class LoggableRepository extends MapRepository implements AppRepository {
   private static final Logger logger = LoggerFactory.getLogger(LoggableRepository.class);
 
-  private final String name;
-
-  public LoggableRepository(String name) {
-    this.name = name;
+  public LoggableRepository() {
   }
 
   @Override
-  public V get(String appId) {
-    V value = super.get(appId);
-    logger.info("[get {}] appId={}, value={}", name, appId, value);
+  public void saveApplication(Application application) {
+    super.saveApplication(application);
+    logger.info("[save application] {}", application);
+  }
+
+  @Override
+  public Application getApplication(String appId) {
+    Application value = super.getApplication(appId);
+    logger.info("[get application] appId={}, application={}", appId, value);
     return value;
-  }
-
-  @Override
-  public void update(String appId, V value) {
-    super.update(appId, value);
-    logger.info("[update {}] appId={}, value={}", name, appId, value);
   }
 
   @Override
   public void delete(String appId) {
     super.delete(appId);
-    logger.info("[delete {}] appId={}", name, appId);
+    logger.info("[delete application] appId={}", appId);
   }
 
   @Override
-  public Map<String, V> all() {
+  public Map<String, Application> all() {
     return super.all();
   }
 
