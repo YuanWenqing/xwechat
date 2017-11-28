@@ -1,20 +1,33 @@
 /**
  * @author yuanwq, date: 2017年8月16日
  */
-package com.xwechat.schedule;
+package com.xwechat.core;
 
+import com.google.common.base.MoreObjects;
 import com.xwechat.util.JsonUtil;
+import org.joda.time.DateTime;
+
+import java.time.format.DateTimeFormatter;
 
 /**
  * @author yuanwq
  */
 public class ExpirableValue {
+  private static final String DATETIME_FORMAT = "yyyy-MM-dd HH:mm:ss";
+
+  private static String formatTime(long timeMillis) {
+    return new DateTime(timeMillis).toString(DATETIME_FORMAT);
+  }
+
   private String value;
   private long createTime;
   private long expireTime;
 
-  /** for deserialization */
-  public ExpirableValue() {}
+  /**
+   * for deserialization
+   */
+  public ExpirableValue() {
+  }
 
   public ExpirableValue(String value, long expireTime) {
     this.value = value;
@@ -48,6 +61,10 @@ public class ExpirableValue {
 
   @Override
   public String toString() {
-    return JsonUtil.writeAsString(JsonUtil.DEFAULT_OBJECT_MAPPER, this);
+    return String.format("%s[%s ~ %s]", value, formatTime(createTime), formatTime(expireTime));
+  }
+
+  public static void main(String[] args) {
+    System.out.println(new ExpirableValue("a", System.currentTimeMillis()));
   }
 }

@@ -9,6 +9,7 @@ import java.util.Collection;
 import java.util.NoSuchElementException;
 import java.util.concurrent.*;
 
+import com.xwechat.core.ExpirableValue;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
