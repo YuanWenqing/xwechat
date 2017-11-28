@@ -29,7 +29,7 @@ public class TestWechatSchedule extends BaseTest {
   @Before
   public void setup() {
     appRepo = new LoggableRepository<>("app");
-    appRepo.update(appId, new Application(appId, appSecret));
+    appRepo.update(appId, new Application("a", appId, appSecret));
     scheduler = WechatScheduler.newBuilder().setAppRepo(appRepo)
         .setAccessTokenRepo(new LoggableRepository<>("accessToken"))
         .setTaskRepo(new LoggableRepository<>("task")).setDuration(3, TimeUnit.SECONDS)
