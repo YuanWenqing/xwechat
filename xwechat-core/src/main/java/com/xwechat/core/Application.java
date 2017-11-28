@@ -37,6 +37,10 @@ public class Application {
     return appId;
   }
 
+  public String getBrief() {
+    return String.format("%s@%s", name, appId);
+  }
+
   public String getAppSecret() {
     return appSecret;
   }
