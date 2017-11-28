@@ -3,11 +3,7 @@
  */
 package com.xwechat.core;
 
-import com.google.common.base.MoreObjects;
-import com.xwechat.util.JsonUtil;
 import org.joda.time.DateTime;
-
-import java.time.format.DateTimeFormatter;
 
 /**
  * @author yuanwq
@@ -64,7 +60,4 @@ public class ExpirableValue {
     return String.format("%s[%s ~ %s]", value, formatTime(createTime), formatTime(expireTime));
   }
 
-  public static void main(String[] args) {
-    System.out.println(new ExpirableValue("a", System.currentTimeMillis()));
-  }
 }
