@@ -224,7 +224,8 @@ public class WechatScheduler {
           toRefresh.add(app);
         }
       }
-      logger.info("to refresh: {}", Lists.transform(toRefresh, Application::getBrief));
+      logger.info("to refresh {} apps: {}", toRefresh.size(),
+          Lists.transform(toRefresh, Application::getBrief));
       for (Application app : toRefresh) {
         taskExecutor.submit(new RefreshThread(app));
       }
