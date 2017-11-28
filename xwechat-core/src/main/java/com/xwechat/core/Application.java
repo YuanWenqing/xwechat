@@ -12,24 +12,21 @@ import com.google.common.base.Preconditions;
  * @author yuanwq
  */
 public class Application {
-  private String name;
+  private final String name;
   private final String appId;
-  private final String appSecret;
+  private String appSecret;
+  private ExpirableValue accessToken;
 
   public Application(String name, String appId, String appSecret) {
-    this(appId, appSecret);
-    this.name = name;
-  }
-
-  public Application(String appId, String appSecret) {
+    Preconditions.checkArgument(StringUtils.isNotBlank(name));
     Preconditions.checkArgument(StringUtils.isNotBlank(appId));
-    Preconditions.checkArgument(StringUtils.isNotBlank(appSecret));
+    this.name = name;
     this.appId = appId;
     this.appSecret = appSecret;
   }
 
-  public void setName(String name) {
-    this.name = name;
+  public Application(String name, String appId) {
+    this(name, appId, null);
   }
 
   public String getName() {
@@ -44,13 +41,27 @@ public class Application {
     return appSecret;
   }
 
+  public void setAppSecret(String appSecret) {
+    Preconditions.checkArgument(StringUtils.isNotBlank(appSecret));
+    this.appSecret = appSecret;
+  }
+
+  public void setAccessToken(ExpirableValue accessToken) {
+    this.accessToken = accessToken;
+  }
+
+  public ExpirableValue getAccessToken() {
+    return accessToken;
+  }
+
   @Override
   public String toString() {
     MoreObjects.ToStringHelper helper = MoreObjects.toStringHelper(getClass());
+    helper.add("name", name);
     helper.add("appId", appId);
     helper.add("appSecret", appSecret);
-    if (name != null) {
-      helper.add("name", name);
+    if (accessToken != null) {
+      helper.add("accessToken", accessToken);
     }
     return helper.toString();
   }
