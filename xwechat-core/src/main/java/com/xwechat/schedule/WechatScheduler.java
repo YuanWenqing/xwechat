@@ -96,14 +96,14 @@ public class WechatScheduler {
     if (app.getAccessToken() == null || StringUtils.isBlank(app.getAccessToken().getValue())) {
       return true;
     }
-    if (app.getAccessToken().getExpireTime() < System.currentTimeMillis() + aheadMillis) {
-      return true;
-    }
     if (checkAccessToken) {
       boolean accessTokenValid = validateAccessToken(app);
       if (!accessTokenValid) {
         return true;
       }
+    }
+    if (app.getAccessToken().getExpireTime() < System.currentTimeMillis() + aheadMillis) {
+      return true;
     }
     logger.info("no need to refresh {}", app);
     return false;
