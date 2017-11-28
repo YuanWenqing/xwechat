@@ -17,6 +17,7 @@ import com.google.common.collect.Sets;
 
 /**
  * @author yuanwq
+ * @deprecated 留着只是因为这类方式的实现细节比较麻烦，所以以后可以回来看看怎么实现的
  */
 public class TaskLoop {
   private static final Logger logger = LoggerFactory.getLogger(TaskLoop.class);
@@ -36,7 +37,7 @@ public class TaskLoop {
 
   /**
    * 清空当前游标对应的appId列表，并游标前进一步
-   * 
+   *
    * @return 当前游标（未前进）对应的appId列表
    */
   public synchronized Collection<String> moveOn() {
@@ -59,8 +60,8 @@ public class TaskLoop {
       }
       idxTaskMap.get(idx).add(appId);
       taskIdxMap.put(appId, idx);
-      logger.info("[addTask] curIdx={}, appId={}, scheduleIdx={}, size={}", curIdx, appId, idx,
-          size);
+      logger
+          .info("[addTask] curIdx={}, appId={}, scheduleIdx={}, size={}", curIdx, appId, idx, size);
     }
   }
 
