@@ -8,6 +8,7 @@ import com.google.common.collect.Lists;
 import com.google.common.util.concurrent.ThreadFactoryBuilder;
 import com.xwechat.api.base.ClientCredentialApi;
 import com.xwechat.api.base.ClientCredentialApi.ClientCredentialResponse;
+import com.xwechat.api.base.GetCallbackIpApi;
 import com.xwechat.core.Application;
 import com.xwechat.core.ExpirableValue;
 import com.xwechat.core.ResponseWrapper;
@@ -46,12 +47,13 @@ public class WechatScheduler {
    */
   private long gapMillis = TimeUnit.MINUTES.toMillis(10);
   /**
-   * accessToken等的有效时间
+   * accessToken提前失效时间间隔：将在expireTime-ahead失效
    */
-  private long durationMillis = TimeUnit.MINUTES.toMillis(60);
+  private long aheadMillis = TimeUnit.MINUTES.toMillis(60);
 
   private volatile boolean started = false;
   private boolean debug = false;
+  private boolean checkAccessToken = false;
 
   private WechatScheduler() {
   }
@@ -62,7 +64,7 @@ public class WechatScheduler {
 
   public synchronized void start() {
     Preconditions.checkState(!started, "already started");
-    Preconditions.checkArgument(durationMillis > gapMillis);
+    Preconditions.checkArgument(aheadMillis > gapMillis);
     scheduledExecutor.scheduleAtFixedRate(new CheckThread(), 0, gapMillis, TimeUnit.MILLISECONDS);
     started = true;
   }
@@ -94,11 +96,40 @@ public class WechatScheduler {
     if (app.getAccessToken() == null || StringUtils.isBlank(app.getAccessToken().getValue())) {
       return true;
     }
-    if (app.getAccessToken().getExpireTime() < System.currentTimeMillis() + durationMillis) {
+    if (app.getAccessToken().getExpireTime() < System.currentTimeMillis() + aheadMillis) {
       return true;
+    }
+    if (checkAccessToken) {
+      boolean accessTokenValid = validateAccessToken(app);
+      if (!accessTokenValid) {
+        return true;
+      }
     }
     logger.info("no need to refresh {}", app);
     return false;
+  }
+
+  /**
+   * @param app
+   * @return true if valid accessToken, false if invalid
+   */
+  private boolean validateAccessToken(Application app) {
+    GetCallbackIpApi api = new GetCallbackIpApi();
+    api.setAccessToken(app.getAccessToken().getValue());
+    try {
+      ResponseWrapper<GetCallbackIpApi.GetCallbackIpResponse> wrapper = Wechat.get().call(api);
+      if (wrapper.isError()) {
+        logger.warn("invalid accessToken: app={}, resp={}", app, wrapper.getBody());
+        return false;
+      }
+      if (debug) {
+        logger.info("wechat server ips: " + wrapper.getBody());
+      }
+      return true;
+    } catch (IOException e) {
+      logger.warn("fail to try accessToken: app=" + app, e);
+      return false;
+    }
   }
 
   private static final String DUMP_TEMPLATE = "===== appRepo =====\n%s\n";
@@ -118,7 +149,9 @@ public class WechatScheduler {
     private ScheduledExecutorService scheduledExecutor;
 
     private long gapMillis = TimeUnit.MINUTES.toMillis(10);
-    private long durationMillis = TimeUnit.MINUTES.toMillis(100);
+    private long aheadMillis = TimeUnit.MINUTES.toMillis(60);
+
+    private boolean checkAccessToken = false;
 
     private Builder() {
     }
@@ -128,13 +161,27 @@ public class WechatScheduler {
       return this;
     }
 
-    public Builder setDuration(long duration, TimeUnit unit) {
-      this.durationMillis = unit.toMillis(duration);
+    /**
+     * accessToken提前失效时间间隔：将在expireTime-ahead失效
+     * <p>
+     * 比如：微信返回的失效时间为2017-01-01 12:00:00，设置提前失效时间为20min，则我们会提前到2017-01-01 11:40:00就作为失效处理
+     */
+    public Builder setAhead(long ahead, TimeUnit unit) {
+      this.aheadMillis = unit.toMillis(ahead);
       return this;
     }
 
     public Builder setGap(long gap, TimeUnit unit) {
       this.gapMillis = unit.toMillis(gap);
+      return this;
+    }
+
+    /**
+     * @param checkAccessToken true: 检查accessToken是否需要更新时，主动发起微信请求校验accessToken的有效性
+     * @return
+     */
+    public Builder setCheckAccessToken(boolean checkAccessToken) {
+      this.checkAccessToken = checkAccessToken;
       return this;
     }
 
@@ -159,8 +206,9 @@ public class WechatScheduler {
       scheduler.taskExecutor =
           this.taskExecutor != null ? this.taskExecutor : scheduler.scheduledExecutor;
 
-      scheduler.durationMillis = this.durationMillis;
+      scheduler.aheadMillis = this.aheadMillis;
       scheduler.gapMillis = this.gapMillis;
+      scheduler.checkAccessToken = this.checkAccessToken;
 
       return scheduler;
     }

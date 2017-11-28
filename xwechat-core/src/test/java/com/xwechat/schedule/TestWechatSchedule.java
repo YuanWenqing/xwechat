@@ -6,6 +6,7 @@ package com.xwechat.schedule;
 import java.util.concurrent.TimeUnit;
 
 import com.xwechat.core.ExpirableValue;
+import org.joda.time.DateTime;
 import org.junit.Before;
 import org.junit.Test;
 
@@ -30,8 +31,8 @@ public class TestWechatSchedule extends BaseTest {
   @Before
   public void setup() {
     appRepo = new LoggableRepository();
-    scheduler =
-        WechatScheduler.newBuilder().setAppRepo(appRepo).setGap(5, TimeUnit.SECONDS).build();
+    scheduler = WechatScheduler.newBuilder().setAppRepo(appRepo).setGap(1, TimeUnit.SECONDS)
+        .setCheckAccessToken(true).build();
     scheduler.setDebug(true);
     scheduler.start();
     System.err.println("dump in setup:\n" + scheduler.dump());
@@ -45,6 +46,20 @@ public class TestWechatSchedule extends BaseTest {
     System.err.println("dump after schedule accessToken:\n" + scheduler.dump());
     assertEquals(1, scheduler.getAppRepo().all().size());
     ExpirableValue accessToken = scheduler.getAppRepo().getApplication(appId).getAccessToken();
+    System.out.println(accessToken);
+  }
+
+  @Test
+  public void testValidateAccessToken() throws InterruptedException {
+    Application application = new Application("a", appId, appSecret);
+    ExpirableValue accessToken =
+        new ExpirableValue("token", DateTime.now().plusDays(1).getMillis());
+    application.setAccessToken(accessToken);
+    appRepo.saveApplication(application);
+    Thread.sleep(2000); // wait for task run
+    System.err.println("dump after schedule accessToken:\n" + scheduler.dump());
+    assertEquals(1, scheduler.getAppRepo().all().size());
+    accessToken = scheduler.getAppRepo().getApplication(appId).getAccessToken();
     System.out.println(accessToken);
   }
 
