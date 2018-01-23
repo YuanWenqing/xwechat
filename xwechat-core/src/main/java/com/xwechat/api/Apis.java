@@ -29,4 +29,5 @@ public interface Apis {
   String WXAPP_TEMPLATE_ADD = "https://api.weixin.qq.com/cgi-bin/wxopen/template/add";
   String WXAPP_TEMPLATE_LIB_GET = "https://api.weixin.qq.com/cgi-bin/wxopen/template/library/get";
   String WXAPP_TEMPLATE_DEL = "https://api.weixin.qq.com/cgi-bin/wxopen/template/del";
+  String WXAPP_JSCODE_2_SESSION = "https://api.weixin.qq.com/sns/jscode2session";
 }
